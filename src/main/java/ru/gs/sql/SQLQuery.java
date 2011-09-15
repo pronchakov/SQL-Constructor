@@ -145,5 +145,10 @@ public class SQLQuery {
     public void setDateTimeFormat(String dateTimeFormat) {
         this.dateTimeFormat = dateTimeFormat;
     }
+
+    @Override
+    public String toString() {
+        return getQueryString();
+    }
     
 }
