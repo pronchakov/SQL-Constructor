@@ -150,5 +150,23 @@ public class SQLQuery {
     public String toString() {
         return getQueryString();
     }
-    
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof SQLQuery) {
+            SQLQuery remoteQuery = (SQLQuery) obj;
+            String remoteQueryString = remoteQuery.getQueryString();
+            String localQueryString = getQueryString();
+            return localQueryString.equals(remoteQueryString);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        String localQueryString = getQueryString();
+        return 5 * localQueryString.length() + localQueryString.hashCode();
+    }
+
 }
