@@ -7,20 +7,13 @@ import java.util.Date;
  *
  * @author APronchakov <artem.pronchakov@gmail.com>
  */
-public class SQLQuery {
-    
+public abstract class CommonQuery {
+
+    protected StringBuilder queryBuilder = new StringBuilder();
     public static final String DEFAULT_SQL_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
-    
-    private StringBuilder queryBuilder = new StringBuilder();
-    private String dateTimeFormat = DEFAULT_SQL_DATE_TIME_FORMAT;
-    
-    public String getQueryString() {
-        deleteLastComma();
-        deleteLastSpace();
-        return queryBuilder.toString();
-    }
-    
-    private void deleteLastComma() {
+    protected String dateTimeFormat = DEFAULT_SQL_DATE_TIME_FORMAT;
+
+    protected void deleteLastCommaIFExist() {
         char ch = queryBuilder.charAt(queryBuilder.length() - 2);
         if (ch == ',') {
             queryBuilder.deleteCharAt(queryBuilder.length() - 2);
@@ -31,56 +24,58 @@ public class SQLQuery {
             }
         }
     }
-    
-    private void deleteLastSpace() {
+
+    protected void deleteLastSpaceIFExist() {
         char ch = queryBuilder.charAt(queryBuilder.length() - 1);
         if (ch == ' ') {
             queryBuilder.deleteCharAt(queryBuilder.length() - 1);
         }
     }
-    
-    public void addSelect() {
-        queryBuilder.append("SELECT ");
+
+    public String getQueryString() {
+        deleteLastCommaIFExist();
+        deleteLastSpaceIFExist();
+        return queryBuilder.toString();
     }
     
-    public void addField(String name) {
+    public void addTableField(String name) {
         queryBuilder.append(name);
         queryBuilder.append(", ");
     }
-    
+
     public void addFrom() {
-        deleteLastComma();
+        deleteLastCommaIFExist();
         queryBuilder.append("FROM ");
     }
-    
+
     public void addFrom(String tableName) {
-        deleteLastComma();
+        deleteLastCommaIFExist();
         queryBuilder.append("FROM ");
         queryBuilder.append(tableName);
         queryBuilder.append(", ");
     }
-    
+
     public void addTableName(String tableName) {
-        deleteLastComma();
+        deleteLastCommaIFExist();
         queryBuilder.append(tableName);
         queryBuilder.append(", ");
     }
-    
+
     public void addWhere() {
-        deleteLastComma();
+        deleteLastCommaIFExist();
         queryBuilder.append("WHERE ");
     }
     
-    public void addWhereClauseEquals(String name, Object value) {
-        deleteLastComma();
+        public void addWhereClauseEquals(String name, Object value) {
+        deleteLastCommaIFExist();
         queryBuilder.append(name);
         queryBuilder.append(" = ");
         insertValueDependsOnClass(value);
         queryBuilder.append(", ");
     }
-    
+
     public void addWhereClauseBetween(String name, Object firstValue, Object secondValue) {
-        deleteLastComma();
+        deleteLastCommaIFExist();
         queryBuilder.append(name);
         queryBuilder.append(" BETWEEN ");
         insertValueDependsOnClassNumberOrDate(firstValue);
@@ -88,16 +83,16 @@ public class SQLQuery {
         insertValueDependsOnClassNumberOrDate(secondValue);
         queryBuilder.append(", ");
     }
-
+    
     private void insertValueDependsOnClass(Object value) {
         insertValueDependsOnClassNumberOrDate(value);
         if (value instanceof String) {
             queryBuilder.append("'");
             queryBuilder.append(value);
             queryBuilder.append("'");
-        } 
+        }
     }
-    
+
     private void insertValueDependsOnClassNumberOrDate(Object value) {
         if (value instanceof Integer || value instanceof Long) {
             queryBuilder.append(value);
@@ -109,64 +104,32 @@ public class SQLQuery {
             queryBuilder.append("'");
         }
     }
-    
+
     public void addWhereClauseLike(String name, Object value, char wildcard, WildcardPosition position) {
-        deleteLastComma();
+        deleteLastCommaIFExist();
         queryBuilder.append(name);
         queryBuilder.append(" LIKE '");
         switch (position) {
-            case AT_START: 
+            case AT_START:
                 queryBuilder.append(wildcard);
                 queryBuilder.append(value);
                 break;
-            case AT_END: 
+            case AT_END:
                 queryBuilder.append(value);
                 queryBuilder.append(wildcard);
                 break;
-            default: 
+            default:
                 queryBuilder.append(value);
                 break;
         }
         queryBuilder.append("', ");
     }
-    
+
     public void addWhereClauseLike(String name, Object value) {
-        deleteLastComma();
+        deleteLastCommaIFExist();
         queryBuilder.append(name);
         queryBuilder.append(" LIKE '");
         queryBuilder.append(value);
         queryBuilder.append("', ");
     }
-
-    public String getDateTimeFormat() {
-        return dateTimeFormat;
-    }
-
-    public void setDateTimeFormat(String dateTimeFormat) {
-        this.dateTimeFormat = dateTimeFormat;
-    }
-
-    @Override
-    public String toString() {
-        return getQueryString();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof SQLQuery) {
-            SQLQuery remoteQuery = (SQLQuery) obj;
-            String remoteQueryString = remoteQuery.getQueryString();
-            String localQueryString = getQueryString();
-            return localQueryString.equals(remoteQueryString);
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        String localQueryString = getQueryString();
-        return 5 * localQueryString.length() + localQueryString.hashCode();
-    }
-
 }

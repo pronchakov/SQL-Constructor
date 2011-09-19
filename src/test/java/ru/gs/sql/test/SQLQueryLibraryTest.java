@@ -1,10 +1,13 @@
 package ru.gs.sql.test;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Calendar;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
-import ru.gs.sql.SQLQuery;
+import ru.gs.sql.SelectQuery;
 import ru.gs.sql.WildcardPosition;
 import static org.junit.Assert.*;
 
@@ -40,7 +43,7 @@ public class SQLQueryLibraryTest {
     private static final String fromLikeWildcardAtStartQueryTest = startQuery + tableName + " WHERE " + whereClauseName + " LIKE '%" + testNameString + "'";
     private static final String fromLikeWildcardAtEndQueryTest = startQuery + tableName + " WHERE " + whereClauseName + " LIKE '" + testNameString + "%'";
 
-    private SQLQuery query;
+    private SelectQuery query;
     
     @BeforeClass
     public static void init() {
@@ -61,22 +64,21 @@ public class SQLQueryLibraryTest {
     
     @Test
     public void simpleQueryTest() {
-        query = new SQLQuery();
-        query.addSelect();
-        query.addField(fieldName);
-        query.addField(fieldFamily);
-        query.addField(fieldSex);
+        List<String> fields = new ArrayList<String>();
+        fields.add(fieldName);
+        fields.add(fieldFamily);
+        fields.add(fieldSex);
+        query = new SelectQuery(fields);
         query.addFrom(tableName);
         
         assertEquals(simpleQueryTest, query.getQueryString());
     }
     
     private void initQuery() {
-        query = new SQLQuery();
-        query.addSelect();
-        query.addField(fieldName);
-        query.addField(fieldFamily);
-        query.addField(fieldSex);
+        query = new SelectQuery();
+        query.addTableField(fieldName);
+        query.addTableField(fieldFamily);
+        query.addTableField(fieldSex);
         query.addFrom(tableName);
         query.addWhere();
     }
@@ -169,4 +171,14 @@ public class SQLQueryLibraryTest {
         assertEquals(fromLikeWildcardAtEndQueryTest, query.getQueryString());
     }
     
+    @Test
+    @Ignore
+    public void simpleInsertTest() {
+        query = new SelectQuery();
+        query.addInsertIntoDBName(tableName);
+        query.addInsertNames(new String[] {"col1", "col2", "col3"});
+//        query.addInsertValues(new String[] {"val1", "val2", "val3"});
+        
+        assertEquals("INSERT INTO " + tableName + " (col1, col2, col3) VALUES (val1, val2, val3)", query.getQueryString());
+    }
 }
