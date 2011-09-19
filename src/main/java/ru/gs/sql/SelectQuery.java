@@ -1,6 +1,7 @@
 package ru.gs.sql;
 
-import java.util.Arrays;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,52 +20,118 @@ public final class SelectQuery extends CommonQuery {
             addTableField(name);
         }
     }
-
-    public void addInsertInto() {
-        queryBuilder.append("INSERT INTO ");
-    }
-
-    public void addInsertIntoDBName(String dbName) {
-        queryBuilder.append("INSERT INTO ");
-        queryBuilder.append(dbName);
-        queryBuilder.append(" ");
-    }
-
-    public void addInsertDBName(String name) {
-        queryBuilder.append(name);
-        queryBuilder.append(" ");
-    }
-
-    public void addInsertNames(String[] names) {
-        addInsertNamesCommonMethod(Arrays.asList(names));
-    }
-
-    public void addIndertNames(List<String> names) {
-        addInsertNamesCommonMethod(names);
-    }
-
-    private void addInsertNamesCommonMethod(List<String> names) {
-        queryBuilder.append("(");
-        for(String name: names) {
-            queryBuilder.append(name);
-            queryBuilder.append(", ");
-        }
+    
+    public void addFrom() {
         deleteLastCommaIFExist();
-        deleteLastSpaceIFExist();
-        queryBuilder.append(") ");
+        queryBuilder.append("FROM ");
     }
 
-    public String getDateTimeFormat() {
-        return dateTimeFormat;
+    public void addFrom(String tableName) {
+        deleteLastCommaIFExist();
+        queryBuilder.append("FROM ");
+        queryBuilder.append(tableName);
+        queryBuilder.append(", ");
+    }
+    
+    public void addWhereClauseEquals(String name, Object value) {
+        queryBuilder.append(name);
+        queryBuilder.append(" = ");
+        insertValueDependsOnClass(value);
+        queryBuilder.append(" ");
+    }
+    
+    public void addWhereClauseANDEquals(String name, Object value) {
+        queryBuilder.append("AND ");
+        queryBuilder.append(name);
+        queryBuilder.append(" = ");
+        insertValueDependsOnClass(value);
+        queryBuilder.append(" ");
+    }
+    
+    public void addWhereClauseOREquals(String name, Object value) {
+        queryBuilder.append("OR ");
+        queryBuilder.append(name);
+        queryBuilder.append(" = ");
+        insertValueDependsOnClass(value);
+        queryBuilder.append(" ");
     }
 
-    public void setDateTimeFormat(String dateTimeFormat) {
-        this.dateTimeFormat = dateTimeFormat;
+    public void addWhereClauseBetween(String name, Object firstValue, Object secondValue) {
+        queryBuilder.append(name);
+        queryBuilder.append(" BETWEEN ");
+        insertValueDependsOnClassNumberOrDate(firstValue);
+        queryBuilder.append(" AND ");
+        insertValueDependsOnClassNumberOrDate(secondValue);
+        queryBuilder.append(" ");
+    }
+    
+    public void addWhereClauseANDBetween(String name, Object firstValue, Object secondValue) {
+        queryBuilder.append("AND ");
+        queryBuilder.append(name);
+        queryBuilder.append(" BETWEEN ");
+        insertValueDependsOnClassNumberOrDate(firstValue);
+        queryBuilder.append(" AND ");
+        insertValueDependsOnClassNumberOrDate(secondValue);
+        queryBuilder.append(" ");
+    }
+    
+    public void addWhereClauseORBetween(String name, Object firstValue, Object secondValue) {
+        queryBuilder.append("OR ");
+        queryBuilder.append(name);
+        queryBuilder.append(" BETWEEN ");
+        insertValueDependsOnClassNumberOrDate(firstValue);
+        queryBuilder.append(" AND ");
+        insertValueDependsOnClassNumberOrDate(secondValue);
+        queryBuilder.append(" ");
     }
 
-    @Override
-    public String toString() {
-        return getQueryString();
+    private void insertValueDependsOnClass(Object value) {
+        insertValueDependsOnClassNumberOrDate(value);
+        if (value instanceof String) {
+            queryBuilder.append("'");
+            queryBuilder.append(value);
+            queryBuilder.append("'");
+        }
+    }
+
+    private void insertValueDependsOnClassNumberOrDate(Object value) {
+        if (value instanceof Integer || value instanceof Long) {
+            queryBuilder.append(value);
+        } else if (value instanceof Date) {
+            SimpleDateFormat sdf = new SimpleDateFormat(dateTimeFormat);
+            String formatedDate = sdf.format(value);
+            queryBuilder.append("'");
+            queryBuilder.append(formatedDate);
+            queryBuilder.append("'");
+        }
+    }
+
+    public void addWhereClauseLike(String name, Object value, char wildcard, WildcardPosition position) {
+        deleteLastCommaIFExist();
+        queryBuilder.append(name);
+        queryBuilder.append(" LIKE '");
+        switch (position) {
+            case AT_START:
+                queryBuilder.append(wildcard);
+                queryBuilder.append(value);
+                break;
+            case AT_END:
+                queryBuilder.append(value);
+                queryBuilder.append(wildcard);
+                break;
+            default:
+                queryBuilder.append(value);
+                break;
+        }
+        queryBuilder.append("' ");
+    }
+
+    public void addWhereClauseLike(String name, Object value) {
+        deleteLastCommaIFExist();
+        queryBuilder.append(name);
+        queryBuilder.append(" LIKE '");
+        queryBuilder.append(value);
+        queryBuilder.append("' ");
     }
 
     @Override
@@ -84,4 +151,5 @@ public final class SelectQuery extends CommonQuery {
         String localQueryString = getQueryString();
         return 5 * localQueryString.length() + localQueryString.hashCode();
     }
+    
 }

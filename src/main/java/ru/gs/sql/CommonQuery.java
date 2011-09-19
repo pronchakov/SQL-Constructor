@@ -1,8 +1,5 @@
 package ru.gs.sql;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 /**
  *
  * @author APronchakov <artem.pronchakov@gmail.com>
@@ -37,21 +34,9 @@ public abstract class CommonQuery {
         deleteLastSpaceIFExist();
         return queryBuilder.toString();
     }
-    
+
     public void addTableField(String name) {
         queryBuilder.append(name);
-        queryBuilder.append(", ");
-    }
-
-    public void addFrom() {
-        deleteLastCommaIFExist();
-        queryBuilder.append("FROM ");
-    }
-
-    public void addFrom(String tableName) {
-        deleteLastCommaIFExist();
-        queryBuilder.append("FROM ");
-        queryBuilder.append(tableName);
         queryBuilder.append(", ");
     }
 
@@ -65,71 +50,17 @@ public abstract class CommonQuery {
         deleteLastCommaIFExist();
         queryBuilder.append("WHERE ");
     }
-    
-        public void addWhereClauseEquals(String name, Object value) {
-        deleteLastCommaIFExist();
-        queryBuilder.append(name);
-        queryBuilder.append(" = ");
-        insertValueDependsOnClass(value);
-        queryBuilder.append(", ");
+
+    public String getDateTimeFormat() {
+        return dateTimeFormat;
     }
 
-    public void addWhereClauseBetween(String name, Object firstValue, Object secondValue) {
-        deleteLastCommaIFExist();
-        queryBuilder.append(name);
-        queryBuilder.append(" BETWEEN ");
-        insertValueDependsOnClassNumberOrDate(firstValue);
-        queryBuilder.append(" AND ");
-        insertValueDependsOnClassNumberOrDate(secondValue);
-        queryBuilder.append(", ");
-    }
-    
-    private void insertValueDependsOnClass(Object value) {
-        insertValueDependsOnClassNumberOrDate(value);
-        if (value instanceof String) {
-            queryBuilder.append("'");
-            queryBuilder.append(value);
-            queryBuilder.append("'");
-        }
+    public void setDateTimeFormat(String dateTimeFormat) {
+        this.dateTimeFormat = dateTimeFormat;
     }
 
-    private void insertValueDependsOnClassNumberOrDate(Object value) {
-        if (value instanceof Integer || value instanceof Long) {
-            queryBuilder.append(value);
-        } else if (value instanceof Date) {
-            SimpleDateFormat sdf = new SimpleDateFormat(dateTimeFormat);
-            String formatedDate = sdf.format(value);
-            queryBuilder.append("'");
-            queryBuilder.append(formatedDate);
-            queryBuilder.append("'");
-        }
-    }
-
-    public void addWhereClauseLike(String name, Object value, char wildcard, WildcardPosition position) {
-        deleteLastCommaIFExist();
-        queryBuilder.append(name);
-        queryBuilder.append(" LIKE '");
-        switch (position) {
-            case AT_START:
-                queryBuilder.append(wildcard);
-                queryBuilder.append(value);
-                break;
-            case AT_END:
-                queryBuilder.append(value);
-                queryBuilder.append(wildcard);
-                break;
-            default:
-                queryBuilder.append(value);
-                break;
-        }
-        queryBuilder.append("', ");
-    }
-
-    public void addWhereClauseLike(String name, Object value) {
-        deleteLastCommaIFExist();
-        queryBuilder.append(name);
-        queryBuilder.append(" LIKE '");
-        queryBuilder.append(value);
-        queryBuilder.append("', ");
+    @Override
+    public String toString() {
+        return getQueryString();
     }
 }
