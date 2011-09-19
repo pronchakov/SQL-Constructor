@@ -16,10 +16,10 @@ public class UpdateQuery extends CommonQuery {
         queryBuilder.append(" SET ");
     }
     
-    @Override
-    public void addTableName(String name) {
+    public UpdateQuery addTableName(String name) {
         queryBuilder.append(name);
         queryBuilder.append(" ");
+        return this;
     }
     
     public void addSET() {

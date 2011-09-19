@@ -19,10 +19,10 @@ public class InsertQuery extends CommonQuery {
         queryBuilder.append(" ");
     }
 
-    @Override
-    public void addTableName(String name) {
+    public InsertQuery addTableName(String name) {
         queryBuilder.append(name);
         queryBuilder.append(" ");
+        return this;
     }
 
     public void addInsertableFieldNames(String[] names) {

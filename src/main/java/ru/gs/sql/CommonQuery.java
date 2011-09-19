@@ -35,22 +35,6 @@ public abstract class CommonQuery {
         return queryBuilder.toString();
     }
 
-    public void addTableField(String name) {
-        queryBuilder.append(name);
-        queryBuilder.append(",");
-    }
-
-    public void addTableName(String tableName) {
-        deleteLastCommaIFExist();
-        queryBuilder.append(tableName);
-        queryBuilder.append(",");
-    }
-
-    public void addWhere() {
-        deleteLastCommaIFExist();
-        queryBuilder.append(" WHERE ");
-    }
-
     public String getDateTimeFormat() {
         return dateTimeFormat;
     }

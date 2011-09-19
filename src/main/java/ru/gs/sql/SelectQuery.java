@@ -10,79 +10,170 @@ import java.util.List;
  */
 public final class SelectQuery extends CommonQuery {
     
+    /**
+     * 
+     */
     public SelectQuery() {
         queryBuilder.append("SELECT ");
     }
     
+    /**
+     * 
+     * @param selectableFieldNames
+     */
     public SelectQuery(List<String> selectableFieldNames) {
         queryBuilder.append("SELECT ");
         for (String name: selectableFieldNames) {
-            addTableField(name);
+            addField(name);
         }
     }
     
-    public void addFrom() {
-        deleteLastCommaIFExist();
-        queryBuilder.append(" FROM ");
+    /**
+     * 
+     * @param name
+     * @return
+     */
+    public SelectQuery addField(String name) {
+        queryBuilder.append(name);
+        queryBuilder.append(",");
+        return this;
     }
 
-    public void addFrom(String tableName) {
+    /**
+     * 
+     * @param tableName
+     * @return
+     */
+    public SelectQuery addTableName(String tableName) {
+        deleteLastCommaIFExist();
+        queryBuilder.append(tableName);
+        queryBuilder.append(",");
+        return this;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public SelectQuery addWhere() {
+        deleteLastCommaIFExist();
+        queryBuilder.append(" WHERE ");
+        return this;
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public SelectQuery addFrom() {
+        deleteLastCommaIFExist();
+        queryBuilder.append(" FROM ");
+        return this;
+    }
+
+    /**
+     * Adds "FROM [Table Name]" to SQL query.<br><br>
+     * 
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * <b>query.addFrom("employee");</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee
+     * 
+     * @param tableName Table name to select from.
+     * @return  
+     */
+    public SelectQuery addFrom(String tableName) {
         deleteLastCommaIFExist();
         queryBuilder.append(" FROM ");
         queryBuilder.append(tableName);
         queryBuilder.append(",");
+        return this;
     }
     
-    public void addWhereClauseEquals(String name, Object value) {
+    /**
+     * Adds a where clause
+     * 
+     * @param name
+     * @param value
+     * @return  
+     */
+    public SelectQuery isEquals(String name, Object value) {
         queryBuilder.append(name);
         queryBuilder.append("=");
         insertValueDependsOnClass(value);
         queryBuilder.append(" ");
+        return this;
     }
     
-    public void addWhereClauseANDEquals(String name, Object value) {
+    /**
+     * 
+     * @param name
+     * @param value
+     * @return  
+     */
+    public SelectQuery andIsEquals(String name, Object value) {
         queryBuilder.append("AND ");
-        queryBuilder.append(name);
-        queryBuilder.append("=");
-        insertValueDependsOnClass(value);
-        queryBuilder.append(" ");
+        isEquals(name, value);
+        return this;
     }
     
-    public void addWhereClauseOREquals(String name, Object value) {
+    /**
+     * 
+     * @param name
+     * @param value
+     * @return  
+     */
+    public SelectQuery orIsEquals(String name, Object value) {
         queryBuilder.append("OR ");
-        queryBuilder.append(name);
-        queryBuilder.append("=");
-        insertValueDependsOnClass(value);
-        queryBuilder.append(" ");
+        isEquals(name, value);
+        return this;
     }
 
-    public void addWhereClauseBetween(String name, Object firstValue, Object secondValue) {
+    /**
+     * 
+     * @param name
+     * @param firstValue
+     * @param secondValue
+     * @return  
+     */
+    public SelectQuery between(String name, Object firstValue, Object secondValue) {
         queryBuilder.append(name);
         queryBuilder.append(" BETWEEN ");
         insertValueDependsOnClassNumberOrDate(firstValue);
         queryBuilder.append(" AND ");
         insertValueDependsOnClassNumberOrDate(secondValue);
         queryBuilder.append(" ");
+        return this;
     }
     
-    public void addWhereClauseANDBetween(String name, Object firstValue, Object secondValue) {
+    /**
+     * 
+     * @param name
+     * @param firstValue
+     * @param secondValue
+     * @return  
+     */
+    public SelectQuery andBetween(String name, Object firstValue, Object secondValue) {
         queryBuilder.append("AND ");
-        queryBuilder.append(name);
-        queryBuilder.append(" BETWEEN ");
-        insertValueDependsOnClassNumberOrDate(firstValue);
-        queryBuilder.append(" AND ");
-        insertValueDependsOnClassNumberOrDate(secondValue);
-        queryBuilder.append(" ");
+        between(name, firstValue, secondValue);
+        return this;
     }
     
-    public void addWhereClauseORBetween(String name, Object firstValue, Object secondValue) {
+    /**
+     * 
+     * @param name
+     * @param firstValue
+     * @param secondValue
+     * @return  
+     */
+    public SelectQuery orBetween(String name, Object firstValue, Object secondValue) {
         queryBuilder.append("OR ");
-        queryBuilder.append(name);
-        queryBuilder.append(" BETWEEN ");
-        insertValueDependsOnClassNumberOrDate(firstValue);
-        queryBuilder.append(" AND ");
-        insertValueDependsOnClassNumberOrDate(secondValue);
-        queryBuilder.append(" ");
+        between(name, firstValue, secondValue);
+        return this;
     }
 
     private void insertValueDependsOnClass(Object value) {
@@ -106,7 +197,15 @@ public final class SelectQuery extends CommonQuery {
         }
     }
 
-    public void addWhereClauseLike(String name, Object value, char wildcard, WildcardPosition position) {
+    /**
+     * 
+     * @param name
+     * @param value
+     * @param wildcard
+     * @param position
+     * @return  
+     */
+    public SelectQuery like(String name, Object value, char wildcard, WildcardPosition position) {
         queryBuilder.append(name);
         queryBuilder.append(" LIKE '");
         switch (position) {
@@ -123,70 +222,73 @@ public final class SelectQuery extends CommonQuery {
                 break;
         }
         queryBuilder.append("' ");
+        return this;
     }
     
-    public void addWhereClauseANDLike(String name, Object value, char wildcard, WildcardPosition position) {
+    /**
+     * 
+     * @param name
+     * @param value
+     * @param wildcard
+     * @param position
+     * @return  
+     */
+    public SelectQuery andLike(String name, Object value, char wildcard, WildcardPosition position) {
         queryBuilder.append("AND ");
-        queryBuilder.append(name);
-        queryBuilder.append(" LIKE '");
-        switch (position) {
-            case AT_START:
-                queryBuilder.append(wildcard);
-                queryBuilder.append(value);
-                break;
-            case AT_END:
-                queryBuilder.append(value);
-                queryBuilder.append(wildcard);
-                break;
-            default:
-                queryBuilder.append(value);
-                break;
-        }
-        queryBuilder.append("' ");
+        like(name, value, wildcard, position);
+        return this;
     }
     
-    public void addWhereClauseORLike(String name, Object value, char wildcard, WildcardPosition position) {
+    /**
+     * 
+     * @param name
+     * @param value
+     * @param wildcard
+     * @param position
+     * @return  
+     */
+    public SelectQuery orLike(String name, Object value, char wildcard, WildcardPosition position) {
         queryBuilder.append("OR ");
-        queryBuilder.append(name);
-        queryBuilder.append(" LIKE '");
-        switch (position) {
-            case AT_START:
-                queryBuilder.append(wildcard);
-                queryBuilder.append(value);
-                break;
-            case AT_END:
-                queryBuilder.append(value);
-                queryBuilder.append(wildcard);
-                break;
-            default:
-                queryBuilder.append(value);
-                break;
-        }
-        queryBuilder.append("' ");
+        like(name, value, wildcard, position);
+        return this;
     }
 
-    public void addWhereClauseLike(String name, Object value) {
-        deleteLastCommaIFExist();
+    /**
+     * 
+     * @param name
+     * @param value
+     * @return  
+     */
+    public SelectQuery like(String name, Object value) {
         queryBuilder.append(name);
         queryBuilder.append(" LIKE '");
         queryBuilder.append(value);
         queryBuilder.append("' ");
+        return this;
     }
     
-    public void addWhereClauseANDLike(String name, Object value) {
+    /**
+     * 
+     * @param name
+     * @param value
+     * @return  
+     */
+    public SelectQuery andLike(String name, Object value) {
         queryBuilder.append("AND ");
-        queryBuilder.append(name);
-        queryBuilder.append(" LIKE '");
-        queryBuilder.append(value);
-        queryBuilder.append("' ");
+        like(name, value);
+        return this;
     }
     
-    public void addWhereClauseORLike(String name, Object value) {
+    /**
+     * 
+     * @param name
+     * @param value
+     * @return  
+     */
+    public SelectQuery orLike(String name, Object value) {
         queryBuilder.append("OR ");
-        queryBuilder.append(name);
-        queryBuilder.append(" LIKE '");
-        queryBuilder.append(value);
-        queryBuilder.append("' ");
+        like(name, value);
+        return this;
     }
 
     @Override
