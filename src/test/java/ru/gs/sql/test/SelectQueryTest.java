@@ -13,33 +13,19 @@ import static org.junit.Assert.*;
 public class SelectQueryTest {
 
     private static Date testDate;
-    private static final String testDateString = "2011-09-15 00:22:13.870";
-    private static final long testLong = 12345678912345L;
-    private static final int testInt = 143;
-    private static final String testNameString = "Petrov";
     /* */
-    private static final String fieldName = "name";
-    private static final String fieldFamily = "family";
-    private static final String fieldSex = "sex";
-    /* */
-    private static final String tableName = "employee";
-    /* */
-    private static final String whereClauseId = "id";
-    private static final String whereClauseName = "name";
-    private static final String whereClauseBirth = "birth";
-    /* */
-    private static final String simpleQueryTest = "SELECT name, family, sex FROM " + tableName;
-    private static final String fromEqualsIntegerQueryTest = "SELECT name, family, sex FROM " + tableName + " WHERE " + whereClauseId + " = " + testInt;
-    private static final String fromEqualsStringQueryTest = "SELECT name, family, sex FROM " + tableName + " WHERE " + whereClauseName + " = '" + testNameString + "'";
-    private static final String fromEqualsANDStringQueryTest = "SELECT name, family, sex FROM " + tableName + " WHERE " + whereClauseName + " = '" + testNameString + "' AND " + whereClauseName + " = '" + testNameString + "'";
-    private static final String fromEqualsORStringQueryTest = "SELECT name, family, sex FROM " + tableName + " WHERE " + whereClauseName + " = '" + testNameString + "' OR " + whereClauseName + " = '" + testNameString + "'";
-    private static final String fromEqualsLongQueryTest = "SELECT name, family, sex FROM " + tableName + " WHERE " + whereClauseId + " = " + testLong;
-    private static final String fromEqualsDateQueryTest = "SELECT name, family, sex FROM " + tableName + " WHERE " + whereClauseBirth + " = '" + testDateString + "'";
-    private static final String fromBetweenDatesQueryTest = "SELECT name, family, sex FROM " + tableName + " WHERE " + whereClauseBirth + " BETWEEN '" + testDateString + "' AND '" + testDateString + "'";
-    private static final String fromBetweenNumbersQueryTest = "SELECT name, family, sex FROM " + tableName + " WHERE " + whereClauseId + " BETWEEN " + testLong + " AND " + testInt + "";
-    private static final String fromLikeSimpleQueryTest = "SELECT name, family, sex FROM " + tableName + " WHERE " + whereClauseName + " LIKE '" + testNameString + "'";
-    private static final String fromLikeWildcardAtstartQueryTest = "SELECT name, family, sex FROM " + tableName + " WHERE " + whereClauseName + " LIKE '%" + testNameString + "'";
-    private static final String fromLikeWildcardAtEndQueryTest = "SELECT name, family, sex FROM " + tableName + " WHERE " + whereClauseName + " LIKE '" + testNameString + "%'";
+    private static final String simpleQueryTest = "SELECT name,family,sex FROM employee";
+    private static final String fromEqualsIntegerQueryTest = "SELECT name,family,sex FROM employee WHERE id=143";
+    private static final String fromEqualsStringQueryTest = "SELECT name,family,sex FROM employee WHERE name='Petrov'";
+    private static final String fromEqualsANDStringQueryTest = "SELECT name,family,sex FROM employee WHERE name='Petrov' AND name='Petrov'";
+    private static final String fromEqualsORStringQueryTest = "SELECT name,family,sex FROM employee WHERE name='Petrov' OR name='Petrov'";
+    private static final String fromEqualsLongQueryTest = "SELECT name,family,sex FROM employee WHERE id=12345678912345";
+    private static final String fromEqualsDateQueryTest = "SELECT name,family,sex FROM employee WHERE birth='2011-09-15 00:22:13.870'";
+    private static final String fromBetweenDatesQueryTest = "SELECT name,family,sex FROM employee WHERE birth BETWEEN '2011-09-15 00:22:13.870' AND '2011-09-15 00:22:13.870'";
+    private static final String fromBetweenNumbersQueryTest = "SELECT name,family,sex FROM employee WHERE id BETWEEN 12345678912345 AND 143";
+    private static final String fromLikeSimpleQueryTest = "SELECT name,family,sex FROM employee WHERE name LIKE 'Petrov'";
+    private static final String fromLikeWildcardAtstartQueryTest = "SELECT name,family,sex FROM employee WHERE name LIKE '%Petrov'";
+    private static final String fromLikeWildcardAtEndQueryTest = "SELECT name,family,sex FROM employee WHERE name LIKE 'Petrov%'";
     private SelectQuery query;
 
     @BeforeClass
@@ -62,28 +48,28 @@ public class SelectQueryTest {
     @Test
     public void simpleQueryTest() {
         List<String> fields = new ArrayList<String>();
-        fields.add(fieldName);
-        fields.add(fieldFamily);
-        fields.add(fieldSex);
+        fields.add("name");
+        fields.add("family");
+        fields.add("sex");
         query = new SelectQuery(fields);
-        query.addFrom(tableName);
+        query.addFrom("employee");
 
         assertEquals(simpleQueryTest, query.getQueryString());
     }
 
     private void initQuery() {
         query = new SelectQuery();
-        query.addTableField(fieldName);
-        query.addTableField(fieldFamily);
-        query.addTableField(fieldSex);
-        query.addFrom(tableName);
+        query.addTableField("name");
+        query.addTableField("family");
+        query.addTableField("sex");
+        query.addFrom("employee");
         query.addWhere();
     }
 
     @Test
     public void fromEqualsStringTest() {
         initQuery();
-        query.addWhereClauseEquals(whereClauseName, testNameString);
+        query.addWhereClauseEquals("name", "Petrov");
 
         assertEquals(fromEqualsStringQueryTest, query.getQueryString());
     }
@@ -91,8 +77,8 @@ public class SelectQueryTest {
     @Test
     public void fromEqualsANDStringTest() {
         initQuery();
-        query.addWhereClauseEquals(whereClauseName, testNameString);
-        query.addWhereClauseANDEquals(whereClauseName, testNameString);
+        query.addWhereClauseEquals("name", "Petrov");
+        query.addWhereClauseANDEquals("name", "Petrov");
 
         assertEquals(fromEqualsANDStringQueryTest, query.getQueryString());
     }
@@ -100,8 +86,8 @@ public class SelectQueryTest {
     @Test
     public void fromEqualsORStringTest() {
         initQuery();
-        query.addWhereClauseEquals(whereClauseName, testNameString);
-        query.addWhereClauseOREquals(whereClauseName, testNameString);
+        query.addWhereClauseEquals("name", "Petrov");
+        query.addWhereClauseOREquals("name", "Petrov");
 
         assertEquals(fromEqualsORStringQueryTest, query.getQueryString());
     }
@@ -109,12 +95,12 @@ public class SelectQueryTest {
     @Test
     public void fromEqualsIntegerTest() {
         initQuery();
-        query.addWhereClauseEquals(whereClauseId, testInt);
+        query.addWhereClauseEquals("id", 143);
 
         assertEquals(fromEqualsIntegerQueryTest, query.getQueryString());
 
         initQuery();
-        query.addWhereClauseEquals(whereClauseId, new Integer(testInt));
+        query.addWhereClauseEquals("id", new Integer(143));
 
         assertEquals(fromEqualsIntegerQueryTest, query.getQueryString());
     }
@@ -122,12 +108,12 @@ public class SelectQueryTest {
     @Test
     public void fromEqualsLongTest() {
         initQuery();
-        query.addWhereClauseEquals(whereClauseId, testLong);
+        query.addWhereClauseEquals("id", 12345678912345L);
 
         assertEquals(fromEqualsLongQueryTest, query.getQueryString());
 
         initQuery();
-        query.addWhereClauseEquals(whereClauseId, new Long(testLong));
+        query.addWhereClauseEquals("id", new Long(12345678912345L));
 
         assertEquals(fromEqualsLongQueryTest, query.getQueryString());
     }
@@ -136,7 +122,7 @@ public class SelectQueryTest {
     public void fromEqualsDateTest() {
         initQuery();
 
-        query.addWhereClauseEquals(whereClauseBirth, testDate);
+        query.addWhereClauseEquals("birth", testDate);
 
         assertEquals(fromEqualsDateQueryTest, query.getQueryString());
     }
@@ -145,7 +131,7 @@ public class SelectQueryTest {
     public void fromBetweenDateTest() {
         initQuery();
 
-        query.addWhereClauseBetween(whereClauseBirth, testDate, testDate);
+        query.addWhereClauseBetween("birth", testDate, testDate);
 
         assertEquals(fromBetweenDatesQueryTest, query.getQueryString());
     }
@@ -154,7 +140,7 @@ public class SelectQueryTest {
     public void fromBetweenNumbersTest() {
         initQuery();
 
-        query.addWhereClauseBetween(whereClauseId, testLong, testInt);
+        query.addWhereClauseBetween("id", 12345678912345L, 143);
 
         assertEquals(fromBetweenNumbersQueryTest, query.getQueryString());
     }
@@ -163,7 +149,7 @@ public class SelectQueryTest {
     public void fromLikeSimpleTest() {
         initQuery();
 
-        query.addWhereClauseLike(whereClauseName, testNameString);
+        query.addWhereClauseLike("name", "Petrov");
 
         assertEquals(fromLikeSimpleQueryTest, query.getQueryString());
     }
@@ -172,7 +158,7 @@ public class SelectQueryTest {
     public void fromLikeWildcardAtStartTest() {
         initQuery();
 
-        query.addWhereClauseLike(whereClauseName, testNameString, '%', WildcardPosition.AT_START);
+        query.addWhereClauseLike("name", "Petrov", '%', WildcardPosition.AT_START);
 
         assertEquals(fromLikeWildcardAtstartQueryTest, query.getQueryString());
     }
@@ -181,9 +167,23 @@ public class SelectQueryTest {
     public void fromLikeWildcardAtEndTest() {
         initQuery();
 
-        query.addWhereClauseLike(whereClauseName, testNameString, '%', WildcardPosition.AT_END);
+        query.addWhereClauseLike("name", "Petrov", '%', WildcardPosition.AT_END);
 
         assertEquals(fromLikeWildcardAtEndQueryTest, query.getQueryString());
+    }
+    
+    @Test
+    public void wholeSelectTest() {
+        initQuery();
+        query.addWhereClauseLike("name", "Petrov", '%', WildcardPosition.AT_END);
+        query.addWhereClauseOREquals("name", "Petrov");
+        query.addWhereClauseANDEquals("name", "Petrov");
+        query.addWhereClauseORBetween("birth", testDate, testDate);
+        query.addWhereClauseANDBetween("birth", testDate, testDate);
+        query.addWhereClauseORLike("name", "Petrov", '_', WildcardPosition.AT_START);
+        query.addWhereClauseANDLike("name", "Petrov", '%', WildcardPosition.AT_START);
+
+        assertEquals("SELECT name,family,sex FROM employee WHERE name LIKE 'Petrov%' OR name='Petrov' AND name='Petrov' OR birth BETWEEN '2011-09-15 00:22:13.870' AND '2011-09-15 00:22:13.870' AND birth BETWEEN '2011-09-15 00:22:13.870' AND '2011-09-15 00:22:13.870' OR name LIKE '_Petrov' AND name LIKE '%Petrov'", query.getQueryString());
     }
 
 }

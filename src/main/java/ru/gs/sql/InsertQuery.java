@@ -37,10 +37,9 @@ public class InsertQuery extends CommonQuery {
         queryBuilder.append("(");
         for(String name: names) {
             queryBuilder.append(name);
-            queryBuilder.append(", ");
+            queryBuilder.append(",");
         }
         deleteLastCommaIFExist();
-        deleteLastSpaceIFExist();
         queryBuilder.append(") ");
     }
     

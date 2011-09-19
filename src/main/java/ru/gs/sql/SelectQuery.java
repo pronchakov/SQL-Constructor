@@ -23,19 +23,19 @@ public final class SelectQuery extends CommonQuery {
     
     public void addFrom() {
         deleteLastCommaIFExist();
-        queryBuilder.append("FROM ");
+        queryBuilder.append(" FROM ");
     }
 
     public void addFrom(String tableName) {
         deleteLastCommaIFExist();
-        queryBuilder.append("FROM ");
+        queryBuilder.append(" FROM ");
         queryBuilder.append(tableName);
-        queryBuilder.append(", ");
+        queryBuilder.append(",");
     }
     
     public void addWhereClauseEquals(String name, Object value) {
         queryBuilder.append(name);
-        queryBuilder.append(" = ");
+        queryBuilder.append("=");
         insertValueDependsOnClass(value);
         queryBuilder.append(" ");
     }
@@ -43,7 +43,7 @@ public final class SelectQuery extends CommonQuery {
     public void addWhereClauseANDEquals(String name, Object value) {
         queryBuilder.append("AND ");
         queryBuilder.append(name);
-        queryBuilder.append(" = ");
+        queryBuilder.append("=");
         insertValueDependsOnClass(value);
         queryBuilder.append(" ");
     }
@@ -51,7 +51,7 @@ public final class SelectQuery extends CommonQuery {
     public void addWhereClauseOREquals(String name, Object value) {
         queryBuilder.append("OR ");
         queryBuilder.append(name);
-        queryBuilder.append(" = ");
+        queryBuilder.append("=");
         insertValueDependsOnClass(value);
         queryBuilder.append(" ");
     }
@@ -107,7 +107,46 @@ public final class SelectQuery extends CommonQuery {
     }
 
     public void addWhereClauseLike(String name, Object value, char wildcard, WildcardPosition position) {
-        deleteLastCommaIFExist();
+        queryBuilder.append(name);
+        queryBuilder.append(" LIKE '");
+        switch (position) {
+            case AT_START:
+                queryBuilder.append(wildcard);
+                queryBuilder.append(value);
+                break;
+            case AT_END:
+                queryBuilder.append(value);
+                queryBuilder.append(wildcard);
+                break;
+            default:
+                queryBuilder.append(value);
+                break;
+        }
+        queryBuilder.append("' ");
+    }
+    
+    public void addWhereClauseANDLike(String name, Object value, char wildcard, WildcardPosition position) {
+        queryBuilder.append("AND ");
+        queryBuilder.append(name);
+        queryBuilder.append(" LIKE '");
+        switch (position) {
+            case AT_START:
+                queryBuilder.append(wildcard);
+                queryBuilder.append(value);
+                break;
+            case AT_END:
+                queryBuilder.append(value);
+                queryBuilder.append(wildcard);
+                break;
+            default:
+                queryBuilder.append(value);
+                break;
+        }
+        queryBuilder.append("' ");
+    }
+    
+    public void addWhereClauseORLike(String name, Object value, char wildcard, WildcardPosition position) {
+        queryBuilder.append("OR ");
         queryBuilder.append(name);
         queryBuilder.append(" LIKE '");
         switch (position) {
@@ -128,6 +167,22 @@ public final class SelectQuery extends CommonQuery {
 
     public void addWhereClauseLike(String name, Object value) {
         deleteLastCommaIFExist();
+        queryBuilder.append(name);
+        queryBuilder.append(" LIKE '");
+        queryBuilder.append(value);
+        queryBuilder.append("' ");
+    }
+    
+    public void addWhereClauseANDLike(String name, Object value) {
+        queryBuilder.append("AND ");
+        queryBuilder.append(name);
+        queryBuilder.append(" LIKE '");
+        queryBuilder.append(value);
+        queryBuilder.append("' ");
+    }
+    
+    public void addWhereClauseORLike(String name, Object value) {
+        queryBuilder.append("OR ");
         queryBuilder.append(name);
         queryBuilder.append(" LIKE '");
         queryBuilder.append(value);

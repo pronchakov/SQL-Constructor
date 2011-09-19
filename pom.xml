@@ -36,6 +36,6 @@
                 </configuration>
             </plugin>
         </plugins>
-        <finalName>${project.artefactId}</finalName>
+        <finalName>${project.artifactId}</finalName>
     </build>
 </project>

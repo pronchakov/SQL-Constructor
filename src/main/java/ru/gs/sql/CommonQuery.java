@@ -37,18 +37,18 @@ public abstract class CommonQuery {
 
     public void addTableField(String name) {
         queryBuilder.append(name);
-        queryBuilder.append(", ");
+        queryBuilder.append(",");
     }
 
     public void addTableName(String tableName) {
         deleteLastCommaIFExist();
         queryBuilder.append(tableName);
-        queryBuilder.append(", ");
+        queryBuilder.append(",");
     }
 
     public void addWhere() {
         deleteLastCommaIFExist();
-        queryBuilder.append("WHERE ");
+        queryBuilder.append(" WHERE ");
     }
 
     public String getDateTimeFormat() {
