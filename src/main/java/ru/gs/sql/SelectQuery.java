@@ -84,7 +84,7 @@ public final class SelectQuery extends CommonQuery {
      * SELECT id,name FROM employee
      * 
      * @param tableName Table name to select from.
-     * @return  
+     * @return SelectQuery with added FROM clause
      */
     public SelectQuery addFrom(String tableName) {
         deleteLastCommaIFExist();
@@ -95,11 +95,22 @@ public final class SelectQuery extends CommonQuery {
     }
     
     /**
-     * Adds a where clause
+     * Adds a where clause equals<br><br>
      * 
-     * @param name
-     * @param value
-     * @return  
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * <b>query.isEquals("age", 4);</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE age=4
+     * 
+     * @param name Name of field to equal
+     * @param value Object to equals to. Can be String, Integer, Long and Date
+     * @return SelectQuery with added equals where clause
      */
     public SelectQuery isEquals(String name, Object value) {
         queryBuilder.append(name);
@@ -110,10 +121,23 @@ public final class SelectQuery extends CommonQuery {
     }
     
     /**
+     * Adds a "AND" keyword and then, where clause equals<br><br>
      * 
-     * @param name
-     * @param value
-     * @return  
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * query.isEquals("age", 4);<br>
+     * <b>query.andIsEquals("city", "London");</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE age=4 AND city='London'
+     * 
+     * @param name Name of field to equal
+     * @param value Object to equals to. Can be String, Integer, Long and Date
+     * @return SelectQuery with added "AND" and equals where clause 
      */
     public SelectQuery andIsEquals(String name, Object value) {
         queryBuilder.append("AND ");
@@ -122,10 +146,23 @@ public final class SelectQuery extends CommonQuery {
     }
     
     /**
+     * Adds a "OR" keyword and then, where clause equals<br><br>
      * 
-     * @param name
-     * @param value
-     * @return  
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * query.isEquals("age", 4);<br>
+     * <b>query.orIsEquals("city", "London");</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE age=4 OR city='London'
+     * 
+     * @param name Name of field to equal
+     * @param value Object to equals to. Can be String, Integer, Long and Date
+     * @return SelectQuery with added "OR" and equals where clause 
      */
     public SelectQuery orIsEquals(String name, Object value) {
         queryBuilder.append("OR ");
@@ -134,11 +171,23 @@ public final class SelectQuery extends CommonQuery {
     }
 
     /**
+     * Adds a where clause between<br><br>
      * 
-     * @param name
-     * @param firstValue
-     * @param secondValue
-     * @return  
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * <b>query.between("age", 12, 18);</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE age BETWEEN 12 AND 18
+     * 
+     * @param name Name of field to BETWEEN
+     * @param firstValue First value in BETWEEN expression. Can be String, Integer, Long and Date
+     * @param secondValue Second value in BETWEEN expression. Can be String, Integer, Long and Date
+     * @return SelectQuery with added BETWEEN where clause
      */
     public SelectQuery between(String name, Object firstValue, Object secondValue) {
         queryBuilder.append(name);
@@ -151,11 +200,24 @@ public final class SelectQuery extends CommonQuery {
     }
     
     /**
+     * Adds a "AND" keyword and then, where clause between<br><br>
      * 
-     * @param name
-     * @param firstValue
-     * @param secondValue
-     * @return  
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * query.isEquals("city", "London");<br>
+     * <b>query.andBetween("age", 12, 18);</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE city='London' AND age BETWEEN 12 AND 18
+     * 
+     * @param name Name of field to BETWEEN
+     * @param firstValue First value in BETWEEN expression. Can be String, Integer, Long and Date
+     * @param secondValue Second value in BETWEEN expression. Can be String, Integer, Long and Date
+     * @return SelectQuery with a "AND" keyword and then, added BETWEEN where clause
      */
     public SelectQuery andBetween(String name, Object firstValue, Object secondValue) {
         queryBuilder.append("AND ");
@@ -164,11 +226,24 @@ public final class SelectQuery extends CommonQuery {
     }
     
     /**
+     * Adds a "OR" keyword and then, where clause between<br><br>
      * 
-     * @param name
-     * @param firstValue
-     * @param secondValue
-     * @return  
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * query.isEquals("city", "London");<br>
+     * <b>query.orBetween("age", 12, 18);</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE city='London' OR age BETWEEN 12 AND 18
+     * 
+     * @param name Name of field to BETWEEN
+     * @param firstValue First value in BETWEEN expression. Can be String, Integer, Long and Date
+     * @param secondValue Second value in BETWEEN expression. Can be String, Integer, Long and Date
+     * @return SelectQuery with a "OR" keyword and then, added BETWEEN where clause
      */
     public SelectQuery orBetween(String name, Object firstValue, Object secondValue) {
         queryBuilder.append("OR ");
