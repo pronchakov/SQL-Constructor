@@ -52,6 +52,18 @@ public final class SelectQuery extends CommonQuery {
     }
 
     /**
+     * Adds WHERE to SQL query.<br><br>
+     * 
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * <b>query.addWhere();</b><br>
+     * query.isEquals("name", "Petrov");<br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE name='Petrov'
      * 
      * @return
      */
@@ -62,8 +74,20 @@ public final class SelectQuery extends CommonQuery {
     }
     
     /**
+     * Adds "FROM" to SQL query.<br><br>
      * 
-     * @return 
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * <b>query.addFrom();</b><br>
+     * <b>query.addTableName("employee");</b><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee
+     * 
+     * 
+     * @return SelectQuery with added FROM.
      */
     public SelectQuery addFrom() {
         deleteLastCommaIFExist();
@@ -84,7 +108,7 @@ public final class SelectQuery extends CommonQuery {
      * SELECT id,name FROM employee
      * 
      * @param tableName Table name to select from.
-     * @return SelectQuery with added FROM clause
+     * @return SelectQuery with added FROM clause with table name
      */
     public SelectQuery addFrom(String tableName) {
         deleteLastCommaIFExist();
@@ -325,12 +349,24 @@ public final class SelectQuery extends CommonQuery {
     }
 
     /**
+     * Adds a where clause LIKE with wildcard<br><br>
      * 
-     * @param name
-     * @param value
-     * @param wildcard
-     * @param position
-     * @return  
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * <b>query.like("family", "Petr", '%', WildcardPosition.AT_END);</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE family LIKE 'Pert%'
+     * 
+     * @param name Name of field to LIKE
+     * @param value LIKE value. It will be wrapped by ' characters.
+     * @param wildcard Wildcard character to add before or after value
+     * @param position Position of the wildcard. It's one of the WildcardPosition
+     * @return SelectQuery with added LIKE where clause
      */
     public SelectQuery like(String name, Object value, char wildcard, WildcardPosition position) {
         queryBuilder.append(name);
@@ -353,12 +389,26 @@ public final class SelectQuery extends CommonQuery {
     }
     
     /**
+     * Adds a "AND" and than, where clause LIKE with wildcard<br>
+     * If it is first constraint, than "AND" will be ignored<br><br>
      * 
-     * @param name
-     * @param value
-     * @param wildcard
-     * @param position
-     * @return  
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * <b>query.andLike("family", "Petr", '%', WildcardPosition.AT_END);</b><br>
+     * <b>query.andLike("family", "Petr", '%', WildcardPosition.AT_END);</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE family LIKE 'Pert%' AND family LIKE 'Pert%'
+     * 
+     * @param name Name of field to LIKE
+     * @param value LIKE value. It will be wrapped by ' characters.
+     * @param wildcard Wildcard character to add before or after value
+     * @param position Position of the wildcard. It's one of the WildcardPosition
+     * @return SelectQuery with added "AND" if it is not first constraint, and than, LIKE where clause
      */
     public SelectQuery andLike(String name, Object value, char wildcard, WildcardPosition position) {
         if (isNotFirstLogicalConstraint()) {
@@ -369,12 +419,26 @@ public final class SelectQuery extends CommonQuery {
     }
     
     /**
+     * Adds a "OR" and than, where clause LIKE with wildcard<br>
+     * If it is first constraint, than "OR" will be ignored<br><br>
      * 
-     * @param name
-     * @param value
-     * @param wildcard
-     * @param position
-     * @return  
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * <b>query.andLike("family", "Petr", '%', WildcardPosition.AT_END);</b><br>
+     * <b>query.orLike("family", "Petr", '%', WildcardPosition.AT_END);</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE family LIKE 'Petr%' OR family LIKE 'Petr%'
+     * 
+     * @param name Name of field to LIKE
+     * @param value LIKE value. It will be wrapped by ' characters.
+     * @param wildcard Wildcard character to add before or after value
+     * @param position Position of the wildcard. It's one of the WildcardPosition
+     * @return SelectQuery with added "OR" if it is not first constraint, and than, LIKE where clause
      */
     public SelectQuery orLike(String name, Object value, char wildcard, WildcardPosition position) {
         if (isNotFirstLogicalConstraint()) {
@@ -385,10 +449,22 @@ public final class SelectQuery extends CommonQuery {
     }
 
     /**
+     * Adds a where clause LIKE without wildcard.<br><br>
      * 
-     * @param name
-     * @param value
-     * @return  
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * <b>query.like("family", "Petr");</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE family LIKE 'Petr'
+     * 
+     * @param name Name of field to LIKE
+     * @param value LIKE value. It will be wrapped by ' characters.
+     * @return SelectQuery with added LIKE where clause without wildcard.
      */
     public SelectQuery like(String name, Object value) {
         queryBuilder.append(name);
@@ -399,10 +475,24 @@ public final class SelectQuery extends CommonQuery {
     }
     
     /**
+     * Adds a "AND" and than, where clause LIKE without wildcard.<br>
+     * If it is first constraint, than "AND" will be ignored<br><br>
      * 
-     * @param name
-     * @param value
-     * @return  
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * <b>query.andLike("family", "Petr");</b><br>
+     * <b>query.andLike("family", "Petr");</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE family LIKE 'Petr' AND family LIKE 'Petr'
+     * 
+     * @param name Name of field to LIKE
+     * @param value LIKE value. It will be wrapped by ' characters.
+     * @return SelectQuery with added "AND" if it is not first constraint, and than, LIKE where clause without wildcard.
      */
     public SelectQuery andLike(String name, Object value) {
         if (isNotFirstLogicalConstraint()) {
@@ -413,10 +503,24 @@ public final class SelectQuery extends CommonQuery {
     }
     
     /**
+     * Adds a "OR" and than, where clause LIKE without wildcard.<br>
+     * If it is first constraint, than "OR" will be ignored<br><br>
      * 
-     * @param name
-     * @param value
-     * @return  
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * <b>query.orLike("family", "Petr");</b><br>
+     * <b>query.orLike("family", "Petr");</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE family LIKE 'Petr'
+     * 
+     * @param name Name of field to LIKE
+     * @param value LIKE value. It will be wrapped by ' characters.
+     * @return SelectQuery with added "OR" if it is not first constraint, and than, LIKE where clause without wildcard.
      */
     public SelectQuery orLike(String name, Object value) {
         if (isNotFirstLogicalConstraint()) {

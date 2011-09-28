@@ -167,12 +167,21 @@ public class SelectQueryTest {
     }
 
     @Test
-    public void fromLikeSimpleTest() {
+    public void fromLikeSimpleTestString() {
         initQuery();
 
         query.like("name", "Petrov");
 
         assertEquals("SELECT name,family,sex FROM employee WHERE name LIKE 'Petrov'", query.getQueryString());
+    }
+    
+    @Test
+    public void fromLikeSimpleTestInteger() {
+        initQuery();
+
+        query.like("id", 123);
+
+        assertEquals("SELECT name,family,sex FROM employee WHERE id LIKE '123'", query.getQueryString());
     }
     
     @Test
