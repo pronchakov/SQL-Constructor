@@ -60,6 +60,22 @@ public class SelectQueryTest {
 
         assertEquals("SELECT name,family,sex FROM employee WHERE name='Petrov'", query.getQueryString());
     }
+    
+    @Test
+    public void fromAndEqualsStringTest() {
+        initQuery();
+        query.andIsEquals("name", "Petrov");
+
+        assertEquals("SELECT name,family,sex FROM employee WHERE name='Petrov'", query.getQueryString());
+    }
+    
+    @Test
+    public void fromOrEqualsStringTest() {
+        initQuery();
+        query.orIsEquals("name", "Petrov");
+
+        assertEquals("SELECT name,family,sex FROM employee WHERE name='Petrov'", query.getQueryString());
+    }
 
     @Test
     public void fromEqualsANDStringTest() {
@@ -122,6 +138,24 @@ public class SelectQueryTest {
 
         assertEquals("SELECT name,family,sex FROM employee WHERE birth BETWEEN '" + testDateString + "' AND '" + testDateString + "'", query.getQueryString());
     }
+    
+    @Test
+    public void fromAndBetweenDateTest() {
+        initQuery();
+
+        query.andBetween("birth", testDate, testDate);
+
+        assertEquals("SELECT name,family,sex FROM employee WHERE birth BETWEEN '" + testDateString + "' AND '" + testDateString + "'", query.getQueryString());
+    }
+    
+    @Test
+    public void fromOrBetweenDateTest() {
+        initQuery();
+
+        query.orBetween("birth", testDate, testDate);
+
+        assertEquals("SELECT name,family,sex FROM employee WHERE birth BETWEEN '" + testDateString + "' AND '" + testDateString + "'", query.getQueryString());
+    }
 
     @Test
     public void fromBetweenNumbersTest() {
@@ -137,6 +171,24 @@ public class SelectQueryTest {
         initQuery();
 
         query.like("name", "Petrov");
+
+        assertEquals("SELECT name,family,sex FROM employee WHERE name LIKE 'Petrov'", query.getQueryString());
+    }
+    
+    @Test
+    public void fromAndLikeSimpleTest() {
+        initQuery();
+
+        query.andLike("name", "Petrov");
+
+        assertEquals("SELECT name,family,sex FROM employee WHERE name LIKE 'Petrov'", query.getQueryString());
+    }
+    
+    @Test
+    public void fromOrLikeSimpleTest() {
+        initQuery();
+
+        query.orLike("name", "Petrov");
 
         assertEquals("SELECT name,family,sex FROM employee WHERE name LIKE 'Petrov'", query.getQueryString());
     }
