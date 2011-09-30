@@ -54,6 +54,10 @@ public class SelectQueryTest {
         query.addFrom("employee");
         query.addWhere();
     }
+    
+    private void initSimpleQuery() {
+        query = new SelectQuery();
+    }
 
     @Test
     public void fromEqualsStringTest() throws SQLCreationException {
@@ -191,8 +195,9 @@ public class SelectQueryTest {
         initQuery();
 
         query.andLike("name", "Petrov");
+        query.andLike("name", "Petrov");
 
-        assertEquals("SELECT name,family,sex FROM employee WHERE name LIKE 'Petrov'", query.getQueryString());
+        assertEquals("SELECT name,family,sex FROM employee WHERE name LIKE 'Petrov' AND name LIKE 'Petrov'", query.getQueryString());
     }
     
     @Test
@@ -200,8 +205,9 @@ public class SelectQueryTest {
         initQuery();
 
         query.orLike("name", "Petrov");
+        query.orLike("name", "Petrov");
 
-        assertEquals("SELECT name,family,sex FROM employee WHERE name LIKE 'Petrov'", query.getQueryString());
+        assertEquals("SELECT name,family,sex FROM employee WHERE name LIKE 'Petrov' OR name LIKE 'Petrov'", query.getQueryString());
     }
 
     @Test
@@ -230,6 +236,113 @@ public class SelectQueryTest {
         query.orLike("name", "Petrov", '_', WildcardPosition.AT_START).andLike("name", "Petrov", '%', WildcardPosition.AT_START);
 
         assertEquals("SELECT name,family,sex FROM employee WHERE name LIKE 'Petrov%' OR name='Petrov' AND name='Petrov' OR birth BETWEEN '" + testDateString + "' AND '" + testDateString + "' AND birth BETWEEN '" + testDateString + "' AND '" + testDateString + "' OR name LIKE '_Petrov' AND name LIKE '%Petrov'", query.getQueryString());
+    }
+    
+    @Test(expected=SQLCreationException.class)
+    public void selectConstructorExceptionTest() throws SQLCreationException {
+        List<String> nullList = null;
+        SelectQuery nullQuery = new SelectQuery(nullList);
+    }
+    
+    @Test(expected=SQLCreationException.class)
+    public void selectAddFieldExceptionTest() throws SQLCreationException {
+        initSimpleQuery();
+        query.addField(null);
+    }
+    
+    @Test(expected=SQLCreationException.class)
+    public void selectAddTableNameExceptionTest() throws SQLCreationException {
+        initSimpleQuery();
+        query.addField("name");
+        query.addFrom();
+        query.addTableName(null);
+    }
+    
+    @Test(expected=SQLCreationException.class)
+    public void selectAddFromTableNameExceptionTest() throws SQLCreationException {
+        initSimpleQuery();
+        query.addField("name");
+        query.addFrom(null);
+    }
+    
+    @Test(expected=SQLCreationException.class)
+    public void selectIsEqualsFieldNameExceptionTest() throws SQLCreationException {
+        initQuery();
+        query.isEquals(null, "sample string");
+    }
+    
+    @Test(expected=SQLCreationException.class)
+    public void selectIsEqualsValueExceptionTest() throws SQLCreationException {
+        initQuery();
+        query.isEquals("sample string", null);
+    }
+    
+    @Test(expected=SQLCreationException.class)
+    public void selectBetweenFieldNameExceptionTest() throws SQLCreationException {
+        initQuery();
+        query.between(null, 14, 16);
+    }
+    
+    @Test(expected=SQLCreationException.class)
+    public void selectBetweenFirstValueExceptionTest() throws SQLCreationException {
+        initQuery();
+        query.between("name", null, 16);
+    }
+    
+    @Test(expected=SQLCreationException.class)
+    public void selectBetweenSecondValueExceptionTest() throws SQLCreationException {
+        initQuery();
+        query.between("name", 14, null);
+    }
+    
+    @Test(expected=SQLCreationException.class)
+    public void selectLikeFieldNameExceptionTest() throws SQLCreationException {
+        initQuery();
+        query.like(null, "value", '%', WildcardPosition.AT_START);
+    }
+    
+    @Test(expected=SQLCreationException.class)
+    public void selectLikeValueExceptionTest() throws SQLCreationException {
+        initQuery();
+        query.like("name", null, '%', WildcardPosition.AT_START);
+    }
+    
+    @Test(expected=SQLCreationException.class)
+    public void selectLikeWildcardPositionExceptionTest() throws SQLCreationException {
+        initQuery();
+        query.like("name", "value", '%', null);
+    }
+    
+    @Test(expected=SQLCreationException.class)
+    public void selectSimpleLikeFieldNameExceptionTest() throws SQLCreationException {
+        initQuery();
+        query.like(null, "value");
+    }
+    
+    @Test(expected=SQLCreationException.class)
+    public void selectSimpleLikeValueExceptionTest() throws SQLCreationException {
+        initQuery();
+        query.like("name", null);
+    }
+    
+    @Test
+    public void objectEqualsTest() throws SQLCreationException {
+        SelectQuery query1 = new SelectQuery();
+        SelectQuery query2 = new SelectQuery();
+        
+        query1.addField("name");
+        query1.addFrom("employee");
+        query1.addWhere();
+        query1.isEquals("id", 1);
+        
+        query2.addField("name");
+        query2.addFrom("employee");
+        query2.addWhere();
+        query2.isEquals("id", 1);
+        
+        assertEquals(query1, query2);
+        assertEquals(query1.hashCode(), query2.hashCode());
+        assertFalse(query1.equals("some string"));
     }
 
 }
