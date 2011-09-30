@@ -9,6 +9,7 @@ import org.junit.Test;
 import ru.gs.sql.SelectQuery;
 import ru.gs.sql.WildcardPosition;
 import static org.junit.Assert.*;
+import ru.gs.sql.exceptions.SQLCreationException;
 
 public class SelectQueryTest {
 
@@ -35,18 +36,19 @@ public class SelectQueryTest {
     }
 
     @Test
-    public void simpleSelectText() {
+    public void simpleSelectText() throws SQLCreationException {        
         List<String> fields = new ArrayList<String>();
         fields.add("name");
         fields.add("family");
         fields.add("sex");
         query = new SelectQuery(fields);
-        query.addFrom("employee");
+        query.addFrom();
+        query.addTableName("employee");
 
         assertEquals("SELECT name,family,sex FROM employee", query.getQueryString());
     }
 
-    private void initQuery() {
+    private void initQuery() throws SQLCreationException {
         query = new SelectQuery();
         query.addField("name").addField("family").addField("sex");
         query.addFrom("employee");
@@ -54,7 +56,7 @@ public class SelectQueryTest {
     }
 
     @Test
-    public void fromEqualsStringTest() {
+    public void fromEqualsStringTest() throws SQLCreationException {
         initQuery();
         query.isEquals("name", "Petrov");
 
@@ -62,7 +64,7 @@ public class SelectQueryTest {
     }
     
     @Test
-    public void fromAndEqualsStringTest() {
+    public void fromAndEqualsStringTest() throws SQLCreationException {
         initQuery();
         query.andIsEquals("name", "Petrov");
 
@@ -70,7 +72,7 @@ public class SelectQueryTest {
     }
     
     @Test
-    public void fromOrEqualsStringTest() {
+    public void fromOrEqualsStringTest() throws SQLCreationException {
         initQuery();
         query.orIsEquals("name", "Petrov");
 
@@ -78,7 +80,7 @@ public class SelectQueryTest {
     }
 
     @Test
-    public void fromEqualsANDStringTest() {
+    public void fromEqualsANDStringTest() throws SQLCreationException {
         initQuery();
         query.isEquals("name", "Petrov");
         query.andIsEquals("name", "Petrov");
@@ -87,7 +89,7 @@ public class SelectQueryTest {
     }
     
     @Test
-    public void fromEqualsORStringTest() {
+    public void fromEqualsORStringTest() throws SQLCreationException {
         initQuery();
         query.isEquals("name", "Petrov");
         query.orIsEquals("name", "Petrov");
@@ -96,7 +98,7 @@ public class SelectQueryTest {
     }
 
     @Test
-    public void fromEqualsIntegerTest() {
+    public void fromEqualsIntegerTest() throws SQLCreationException {
         initQuery();
         query.isEquals("id", 143);
 
@@ -109,7 +111,7 @@ public class SelectQueryTest {
     }
 
     @Test
-    public void fromEqualsLongTest() {
+    public void fromEqualsLongTest() throws SQLCreationException {
         initQuery();
         query.isEquals("id", 12345678912345L);
 
@@ -122,7 +124,7 @@ public class SelectQueryTest {
     }
 
     @Test
-    public void fromEqualsDateTest() {
+    public void fromEqualsDateTest() throws SQLCreationException {
         initQuery();
 
         query.isEquals("birth", testDate);
@@ -131,7 +133,7 @@ public class SelectQueryTest {
     }
 
     @Test
-    public void fromBetweenDateTest() {
+    public void fromBetweenDateTest() throws SQLCreationException {
         initQuery();
 
         query.between("birth", testDate, testDate);
@@ -140,7 +142,7 @@ public class SelectQueryTest {
     }
     
     @Test
-    public void fromAndBetweenDateTest() {
+    public void fromAndBetweenDateTest() throws SQLCreationException {
         initQuery();
 
         query.andBetween("birth", testDate, testDate);
@@ -149,7 +151,7 @@ public class SelectQueryTest {
     }
     
     @Test
-    public void fromOrBetweenDateTest() {
+    public void fromOrBetweenDateTest() throws SQLCreationException {
         initQuery();
 
         query.orBetween("birth", testDate, testDate);
@@ -158,7 +160,7 @@ public class SelectQueryTest {
     }
 
     @Test
-    public void fromBetweenNumbersTest() {
+    public void fromBetweenNumbersTest() throws SQLCreationException {
         initQuery();
 
         query.between("id", 12345678912345L, 143);
@@ -167,7 +169,7 @@ public class SelectQueryTest {
     }
 
     @Test
-    public void fromLikeSimpleTestString() {
+    public void fromLikeSimpleTestString() throws SQLCreationException {
         initQuery();
 
         query.like("name", "Petrov");
@@ -176,7 +178,7 @@ public class SelectQueryTest {
     }
     
     @Test
-    public void fromLikeSimpleTestInteger() {
+    public void fromLikeSimpleTestInteger() throws SQLCreationException {
         initQuery();
 
         query.like("id", 123);
@@ -185,7 +187,7 @@ public class SelectQueryTest {
     }
     
     @Test
-    public void fromAndLikeSimpleTest() {
+    public void fromAndLikeSimpleTest() throws SQLCreationException {
         initQuery();
 
         query.andLike("name", "Petrov");
@@ -194,7 +196,7 @@ public class SelectQueryTest {
     }
     
     @Test
-    public void fromOrLikeSimpleTest() {
+    public void fromOrLikeSimpleTest() throws SQLCreationException {
         initQuery();
 
         query.orLike("name", "Petrov");
@@ -203,7 +205,7 @@ public class SelectQueryTest {
     }
 
     @Test
-    public void fromLikeWildcardAtStartTest() {
+    public void fromLikeWildcardAtStartTest() throws SQLCreationException {
         initQuery();
 
         query.like("name", "Petrov", '%', WildcardPosition.AT_START);
@@ -212,7 +214,7 @@ public class SelectQueryTest {
     }
 
     @Test
-    public void fromLikeWildcardAtEndTest() {
+    public void fromLikeWildcardAtEndTest() throws SQLCreationException {
         initQuery();
 
         query.like("name", "Petrov", '%', WildcardPosition.AT_END);
@@ -221,7 +223,7 @@ public class SelectQueryTest {
     }
     
     @Test
-    public void wholeSelectTest() {
+    public void wholeSelectTest() throws SQLCreationException {
         initQuery();
         query.like("name", "Petrov", '%', WildcardPosition.AT_END).orIsEquals("name", "Petrov").andIsEquals("name", "Petrov");
         query.orBetween("birth", testDate, testDate).andBetween("birth", testDate, testDate);
