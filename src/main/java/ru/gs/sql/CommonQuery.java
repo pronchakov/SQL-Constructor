@@ -1,12 +1,10 @@
 package ru.gs.sql;
 
-import java.io.Serializable;
-
 /**
  *
  * @author APronchakov <artem.pronchakov@gmail.com>
  */
-public abstract class CommonQuery implements Serializable {
+public abstract class CommonQuery {
 
     protected StringBuilder queryBuilder = new StringBuilder();
     public static final String DEFAULT_SQL_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";

@@ -327,6 +327,23 @@ public final class SelectQuery extends CommonQuery {
         queryBuilder.append(" ");
         return this;
     }
+    
+    public SelectQuery notBetween(String name, Object firstValue, Object secondValue) throws SQLCreationException {
+        if (isStringEmptyOrNull(name)) {
+            throw new SQLCreationException("Field name cannot be null or empty");
+        } else if (firstValue == null) {
+            throw new SQLCreationException("First value for BETWEEN cannot be null");
+        } else if (secondValue == null) {
+            throw new SQLCreationException("Second value for BETWEEN cannot be null");
+        }
+        queryBuilder.append(name);
+        queryBuilder.append(" NOT BETWEEN ");
+        insertValueDependsOnClassNumberOrDate(firstValue);
+        queryBuilder.append(" AND ");
+        insertValueDependsOnClassNumberOrDate(secondValue);
+        queryBuilder.append(" ");
+        return this;
+    }
 
     /**
      * Adds a "AND" keyword and then, where clause between<br>
@@ -369,6 +386,14 @@ public final class SelectQuery extends CommonQuery {
         between(name, firstValue, secondValue);
         return this;
     }
+    
+    public SelectQuery andNotBetween(String name, Object firstValue, Object secondValue) throws SQLCreationException {
+        if (isNotFirstLogicalConstraint()) {
+            queryBuilder.append("AND ");
+        }
+        notBetween(name, firstValue, secondValue);
+        return this;
+    }
 
     /**
      * Adds a "OR" keyword and then, where clause between<br>
@@ -409,6 +434,14 @@ public final class SelectQuery extends CommonQuery {
             queryBuilder.append("OR ");
         }
         between(name, firstValue, secondValue);
+        return this;
+    }
+    
+    public SelectQuery orNotBetween(String name, Object firstValue, Object secondValue) throws SQLCreationException {
+        if (isNotFirstLogicalConstraint()) {
+            queryBuilder.append("OR ");
+        }
+        notBetween(name, firstValue, secondValue);
         return this;
     }
 
