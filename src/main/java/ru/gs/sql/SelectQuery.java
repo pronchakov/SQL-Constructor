@@ -6,6 +6,23 @@ import java.util.List;
 import ru.gs.sql.exceptions.SQLCreationException;
 
 /**
+ * Class for building SELECT SQL query.<br><br>
+ * 
+ * Example: <br>
+ * SelectQuery query = new SelectQuery();<br><br>
+ * 
+ * query.addField("id");<br>
+ * query.addField("name");<br>
+ * query.addField("family");<br><br>
+ * 
+ * query.addFrom("employee");<br>
+ * query.addWhere();<br>
+ * query.isEquals("age", 27);<br><br>
+ * 
+ * String queryString = query.toString();<br><br>
+ * 
+ * Result(queryString): <br>
+ * SELECT id,name,family FROM employee WHERE age=27
  *
  * @author APronchakov <artem.pronchakov@gmail.com>
  */
