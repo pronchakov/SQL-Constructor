@@ -205,11 +205,7 @@ public final class SelectQuery extends CommonQuery {
      * @throws SQLCreationException When name parameter is null or empty, or value parameter is null
      */
     public SelectQuery isEquals(String name, Object value) throws SQLCreationException {
-        if (isStringEmptyOrNull(name)) {
-            throw new SQLCreationException("Field name cannot be null or empty");
-        } else if (value == null) {
-            throw new SQLCreationException("Value cannot be null");
-        }
+        checkSimpleLikeParameters(name, value);
         queryBuilder.append(name);
         queryBuilder.append("=");
         insertValueDependsOnClass(value);
@@ -575,33 +571,13 @@ public final class SelectQuery extends CommonQuery {
      * @throws SQLCreationException When name parameter is null or empty, or value parameter is null, or wildcard position parameter is null
      */
     public SelectQuery like(String name, Object value, char wildcard, WildcardPosition position) throws SQLCreationException {
-        if (isStringEmptyOrNull(name)) {
-            throw new SQLCreationException("Field name cannot be null or empty");
-        } else if (value == null) {
-            throw new SQLCreationException("Value cannot be null");
-        } else if (position == null) {
-            throw new SQLCreationException("Wildcard position cannot be null");
-        }
+        checkLikeParameters(name, value, position);
         queryBuilder.append(name);
-        queryBuilder.append(" LIKE '");
-        switch (position) {
-            case AT_START:
-                queryBuilder.append(wildcard);
-                queryBuilder.append(value);
-                break;
-            case AT_END:
-                queryBuilder.append(value);
-                queryBuilder.append(wildcard);
-                break;
-            default:
-                queryBuilder.append(value);
-                break;
-        }
-        queryBuilder.append("' ");
+        commonLike(position, wildcard, value);
         return this;
     }
     
-    public SelectQuery notLike(String name, Object value, char wildcard, WildcardPosition position) throws SQLCreationException {
+    private void checkLikeParameters(String name, Object value, WildcardPosition position) throws SQLCreationException {
         if (isStringEmptyOrNull(name)) {
             throw new SQLCreationException("Field name cannot be null or empty");
         } else if (value == null) {
@@ -609,8 +585,9 @@ public final class SelectQuery extends CommonQuery {
         } else if (position == null) {
             throw new SQLCreationException("Wildcard position cannot be null");
         }
-        queryBuilder.append(name);
-        queryBuilder.append(" NOT");
+    }
+    
+    private void commonLike(WildcardPosition position, char wildcard, Object value) {
         queryBuilder.append(" LIKE '");
         switch (position) {
             case AT_START:
@@ -626,6 +603,34 @@ public final class SelectQuery extends CommonQuery {
                 break;
         }
         queryBuilder.append("' ");
+    }
+    
+    /**
+     * Adds a where clause LIKE with wildcard with NOT prefix<br><br>
+     * 
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * <b>query.notLike("family", "Petr", '%', WildcardPosition.AT_END);</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE family NOT LIKE 'Pert%'
+     * 
+     * @param name Name of field to NOT LIKE
+     * @param value NOT LIKE value. It will be wrapped by ' characters.
+     * @param wildcard Wildcard character to add before or after value
+     * @param position Position of the wildcard. It's one of the WildcardPosition
+     * @return SelectQuery with added NOT LIKE where clause
+     * @throws SQLCreationException When name parameter is null or empty, or value parameter is null, or wildcard position parameter is null
+     */
+    public SelectQuery notLike(String name, Object value, char wildcard, WildcardPosition position) throws SQLCreationException {
+        checkLikeParameters(name, value, position);
+        queryBuilder.append(name);
+        queryBuilder.append(" NOT");
+        commonLike(position, wildcard, value);
         return this;
     }
 
@@ -660,6 +665,29 @@ public final class SelectQuery extends CommonQuery {
         return this;
     }
     
+    /**
+     * Adds a "AND" and than, where clause LIKE with wildcard with NOT prefix<br>
+     * If it is first constraint, than "AND" will be ignored<br><br>
+     * 
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * <b>query.andNotLike("family", "Petr", '%', WildcardPosition.AT_END);</b><br>
+     * <b>query.andNotLike("family", "Petr", '%', WildcardPosition.AT_END);</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE family NOT LIKE 'Pert%' AND family NOT LIKE 'Pert%'
+     * 
+     * @param name Name of field to LIKE
+     * @param value LIKE value. It will be wrapped by ' characters.
+     * @param wildcard Wildcard character to add before or after value
+     * @param position Position of the wildcard. It's one of the WildcardPosition
+     * @return SelectQuery with added "AND" if it is not first constraint, and than, LIKE where clause
+     * @throws SQLCreationException When name parameter is null or empty, or value parameter is null, or wildcard position parameter is null
+     */
     public SelectQuery andNotLike(String name, Object value, char wildcard, WildcardPosition position) throws SQLCreationException {
         if (isNotFirstLogicalConstraint()) {
             queryBuilder.append("AND ");
@@ -699,6 +727,29 @@ public final class SelectQuery extends CommonQuery {
         return this;
     }
     
+    /**
+     * Adds a "OR" and than, where clause LIKE with wildcard with NOT prefix<br>
+     * If it is first constraint, than "OR" will be ignored<br><br>
+     * 
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * <b>query.andNotLike("family", "Petr", '%', WildcardPosition.AT_END);</b><br>
+     * <b>query.orNotLike("family", "Petr", '%', WildcardPosition.AT_END);</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE family NOT LIKE 'Petr%' OR family NOT LIKE 'Petr%'
+     * 
+     * @param name Name of field to NOT LIKE
+     * @param value NOT LIKE value. It will be wrapped by ' characters.
+     * @param wildcard Wildcard character to add before or after value
+     * @param position Position of the wildcard. It's one of the WildcardPosition
+     * @return SelectQuery with added "OR" if it is not first constraint, and than, NOT LIKE where clause
+     * @throws SQLCreationException When name parameter is null or empty, or value parameter is null, or wildcard position parameter is null
+     */
     public SelectQuery orNotLike(String name, Object value, char wildcard, WildcardPosition position) throws SQLCreationException {
         if (isNotFirstLogicalConstraint()) {
             queryBuilder.append("OR ");
@@ -727,15 +778,9 @@ public final class SelectQuery extends CommonQuery {
      * @throws SQLCreationException When name parameter is null or empty, or value parameter is null
      */
     public SelectQuery like(String name, Object value) throws SQLCreationException {
-        if (isStringEmptyOrNull(name)) {
-            throw new SQLCreationException("Field name cannot be null or empty");
-        } else if (value == null) {
-            throw new SQLCreationException("Value cannot be null");
-        }
+        checkSimpleLikeParameters(name, value);
         queryBuilder.append(name);
-        queryBuilder.append(" LIKE '");
-        queryBuilder.append(value);
-        queryBuilder.append("' ");
+        commonSimpleLike(value);
         return this;
     }
     
@@ -759,17 +804,25 @@ public final class SelectQuery extends CommonQuery {
      * @throws SQLCreationException When name parameter is null or empty, or value parameter is null
      */
     public SelectQuery notLike(String name, Object value) throws SQLCreationException {
+        checkSimpleLikeParameters(name, value);
+        queryBuilder.append(name);
+        queryBuilder.append(" NOT");
+        commonSimpleLike(value);
+        return this;
+    }
+    
+    private void checkSimpleLikeParameters(String name, Object value) throws SQLCreationException {
         if (isStringEmptyOrNull(name)) {
             throw new SQLCreationException("Field name cannot be null or empty");
         } else if (value == null) {
             throw new SQLCreationException("Value cannot be null");
         }
-        queryBuilder.append(name);
-        queryBuilder.append(" NOT");
+    }
+
+    private void commonSimpleLike(Object value) {
         queryBuilder.append(" LIKE '");
         queryBuilder.append(value);
         queryBuilder.append("' ");
-        return this;
     }
 
     /**
