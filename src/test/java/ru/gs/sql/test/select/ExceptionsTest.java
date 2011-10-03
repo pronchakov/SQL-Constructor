@@ -83,6 +83,24 @@ public class ExceptionsTest {
     }
     
     @Test(expected=SQLCreationException.class)
+    public void selectNotBetweenFieldNameExceptionTest() throws SQLCreationException {
+        initQuery();
+        query.notBetween(null, 14, 16);
+    }
+    
+    @Test(expected=SQLCreationException.class)
+    public void selectNotBetweenFirstValueExceptionTest() throws SQLCreationException {
+        initQuery();
+        query.notBetween("name", null, 16);
+    }
+    
+    @Test(expected=SQLCreationException.class)
+    public void selectNotBetweenSecondValueExceptionTest() throws SQLCreationException {
+        initQuery();
+        query.notBetween("name", 14, null);
+    }
+    
+    @Test(expected=SQLCreationException.class)
     public void selectLikeFieldNameExceptionTest() throws SQLCreationException {
         initQuery();
         query.like(null, "value", '%', WildcardPosition.AT_START);

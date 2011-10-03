@@ -59,10 +59,10 @@ public class SelectQueryTest {
     public void wholeSelectTest() throws SQLCreationException {
         initQuery();
         query.like("name", "Petrov", '%', WildcardPosition.AT_END).orIsEquals("name", "Petrov").andIsEquals("name", "Petrov");
-        query.orBetween("birth", testDate, testDate).andBetween("birth", testDate, testDate);
+        query.orNotBetween("birth", testDate, testDate).andNotBetween("birth", testDate, testDate);
         query.orLike("name", "Petrov", '_', WildcardPosition.AT_START).andLike("name", "Petrov", '%', WildcardPosition.AT_START);
 
-        assertEquals("SELECT name,family,sex FROM employee WHERE name LIKE 'Petrov%' OR name='Petrov' AND name='Petrov' OR birth BETWEEN '" + testDateString + "' AND '" + testDateString + "' AND birth BETWEEN '" + testDateString + "' AND '" + testDateString + "' OR name LIKE '_Petrov' AND name LIKE '%Petrov'", query.getQueryString());
+        assertEquals("SELECT name,family,sex FROM employee WHERE name LIKE 'Petrov%' OR name='Petrov' AND name='Petrov' OR birth NOT BETWEEN '" + testDateString + "' AND '" + testDateString + "' AND birth NOT BETWEEN '" + testDateString + "' AND '" + testDateString + "' OR name LIKE '_Petrov' AND name LIKE '%Petrov'", query.getQueryString());
     }
     
     @Test

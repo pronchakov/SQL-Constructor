@@ -312,6 +312,13 @@ public final class SelectQuery extends CommonQuery {
      * @throws SQLCreationException When name parameter is null or empty, or firstValue parameter is null, or secondValue parameter is null
      */
     public SelectQuery between(String name, Object firstValue, Object secondValue) throws SQLCreationException {
+        checkBetweenParameters(name, firstValue, secondValue);
+        queryBuilder.append(name);
+        commonBetween(firstValue, secondValue);
+        return this;
+    }
+    
+    private void checkBetweenParameters(String name, Object firstValue, Object secondValue) throws SQLCreationException {
         if (isStringEmptyOrNull(name)) {
             throw new SQLCreationException("Field name cannot be null or empty");
         } else if (firstValue == null) {
@@ -319,29 +326,21 @@ public final class SelectQuery extends CommonQuery {
         } else if (secondValue == null) {
             throw new SQLCreationException("Second value for BETWEEN cannot be null");
         }
-        queryBuilder.append(name);
+    }
+    
+    private void commonBetween(Object firstValue, Object secondValue) {
         queryBuilder.append(" BETWEEN ");
         insertValueDependsOnClassNumberOrDate(firstValue);
         queryBuilder.append(" AND ");
         insertValueDependsOnClassNumberOrDate(secondValue);
         queryBuilder.append(" ");
-        return this;
     }
     
     public SelectQuery notBetween(String name, Object firstValue, Object secondValue) throws SQLCreationException {
-        if (isStringEmptyOrNull(name)) {
-            throw new SQLCreationException("Field name cannot be null or empty");
-        } else if (firstValue == null) {
-            throw new SQLCreationException("First value for BETWEEN cannot be null");
-        } else if (secondValue == null) {
-            throw new SQLCreationException("Second value for BETWEEN cannot be null");
-        }
+        checkBetweenParameters(name, firstValue, secondValue);
         queryBuilder.append(name);
-        queryBuilder.append(" NOT BETWEEN ");
-        insertValueDependsOnClassNumberOrDate(firstValue);
-        queryBuilder.append(" AND ");
-        insertValueDependsOnClassNumberOrDate(secondValue);
-        queryBuilder.append(" ");
+        queryBuilder.append(" NOT");
+        commonBetween(firstValue, secondValue);
         return this;
     }
 

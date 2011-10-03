@@ -131,6 +131,15 @@ public class WhereTest {
     }
     
     @Test
+    public void fromNotBetweenDateTest() throws SQLCreationException {
+        initQuery();
+
+        query.notBetween("birth", testDate, testDate);
+
+        assertEquals("SELECT name,family,sex FROM employee WHERE birth NOT BETWEEN '" + testDateString + "' AND '" + testDateString + "'", query.getQueryString());
+    }
+    
+    @Test
     public void fromAndBetweenDateTest() throws SQLCreationException {
         initQuery();
 
@@ -140,12 +149,30 @@ public class WhereTest {
     }
     
     @Test
+    public void fromAndNotBetweenDateTest() throws SQLCreationException {
+        initQuery();
+
+        query.andNotBetween("birth", testDate, testDate);
+
+        assertEquals("SELECT name,family,sex FROM employee WHERE birth NOT BETWEEN '" + testDateString + "' AND '" + testDateString + "'", query.getQueryString());
+    }
+    
+    @Test
     public void fromOrBetweenDateTest() throws SQLCreationException {
         initQuery();
 
         query.orBetween("birth", testDate, testDate);
 
         assertEquals("SELECT name,family,sex FROM employee WHERE birth BETWEEN '" + testDateString + "' AND '" + testDateString + "'", query.getQueryString());
+    }
+    
+    @Test
+    public void fromOrNotBetweenDateTest() throws SQLCreationException {
+        initQuery();
+
+        query.orNotBetween("birth", testDate, testDate);
+
+        assertEquals("SELECT name,family,sex FROM employee WHERE birth NOT BETWEEN '" + testDateString + "' AND '" + testDateString + "'", query.getQueryString());
     }
 
     @Test
