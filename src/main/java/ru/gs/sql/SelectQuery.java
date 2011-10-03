@@ -336,6 +336,26 @@ public final class SelectQuery extends CommonQuery {
         queryBuilder.append(" ");
     }
     
+    /**
+     * Adds a where clause between with prefix NOT<br>
+     * 
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * <b>query.notBetween("age", 12, 18);</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE age NOT BETWEEN 12 AND 18
+     * 
+     * @param name Name of field to NOT BETWEEN
+     * @param firstValue First value in BETWEEN expression. Can be String, Integer, Long and Date
+     * @param secondValue Second value in BETWEEN expression. Can be String, Integer, Long and Date
+     * @return SelectQuery with added BETWEEN where clause
+     * @throws SQLCreationException When name parameter is null or empty, or firstValue parameter is null, or secondValue parameter is null
+     */
     public SelectQuery notBetween(String name, Object firstValue, Object secondValue) throws SQLCreationException {
         checkBetweenParameters(name, firstValue, secondValue);
         queryBuilder.append(name);
@@ -366,11 +386,11 @@ public final class SelectQuery extends CommonQuery {
      * query.addField("name");<br>
      * query.addFrom("employee");<br>
      * addWhere();<br>
-     * query.andIsEquals("city", "London");<br>
-     * <b>query.andBetween("age", 12, 18);</b><br><br>
+     * <b>query.andBetween("age", 12, 18);</b><br>
+     * query.andIsEquals("city", "London");<br><br>
      * 
      * Result: <br>
-     * SELECT id,name FROM employee WHERE city='London' AND age BETWEEN 12 AND 18
+     * SELECT id,name FROM employee WHERE age BETWEEN 12 AND 18 AND city='London'
      * 
      * @param name Name of field to BETWEEN
      * @param firstValue First value in BETWEEN expression. Can be String, Integer, Long and Date
@@ -386,6 +406,40 @@ public final class SelectQuery extends CommonQuery {
         return this;
     }
     
+    /**
+     * Adds a "AND" keyword and then, where clause between with prefix NOT<br>
+     * If it is first constraint, than "AND" will be ignored<br><br>
+     * 
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * query.isEquals("city", "London");<br>
+     * <b>query.andBetween("age", 12, 18);</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE city='London' AND age BETWEEN 12 AND 18<br><br>
+     * 
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * <b>query.andNotBetween("age", 12, 18);</b><br>
+     * query.andIsEquals("city", "London");<br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE age NOT BETWEEN 12 AND 18 AND city='London'
+     * 
+     * @param name Name of field to NOT BETWEEN
+     * @param firstValue First value in NOT BETWEEN expression. Can be String, Integer, Long and Date
+     * @param secondValue Second value in NOT BETWEEN expression. Can be String, Integer, Long and Date
+     * @return SelectQuery with a "AND" keyword and then, added NOT BETWEEN where clause
+     * @throws SQLCreationException When name parameter is null or empty, or firstValue parameter is null, or secondValue parameter is null
+     */
     public SelectQuery andNotBetween(String name, Object firstValue, Object secondValue) throws SQLCreationException {
         if (isNotFirstLogicalConstraint()) {
             queryBuilder.append("AND ");
@@ -416,11 +470,11 @@ public final class SelectQuery extends CommonQuery {
      * query.addField("name");<br>
      * query.addFrom("employee");<br>
      * addWhere();<br>
-     * <b>query.orIsEquals("city", "London");</b><br>
-     * <b>query.orBetween("age", 12, 18);</b><br><br>
+     * <b>query.orBetween("age", 12, 18);</b><br>
+     * <b>query.orIsEquals("city", "London");</b><br><br>
      * 
      * Result: <br>
-     * SELECT id,name FROM employee WHERE city='London' OR age BETWEEN 12 AND 18
+     * SELECT id,name FROM employee WHERE age BETWEEN 12 AND 18 OR city='London'
      * 
      * @param name Name of field to BETWEEN
      * @param firstValue First value in BETWEEN expression. Can be String, Integer, Long and Date
@@ -436,6 +490,40 @@ public final class SelectQuery extends CommonQuery {
         return this;
     }
     
+    /**
+     * Adds a "OR" keyword and then, where clause between with prefix NOT<br>
+     * If it is first constraint, than "OR" will be ignored<br><br>
+     * 
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * <b>query.isEquals("city", "London");</b><br>
+     * <b>query.orNotBetween("age", 12, 18);</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE city='London' OR age BETWEEN 12 AND 18<br><br>
+     * 
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * <b>query.orBetween("age", 12, 18);</b><br>
+     * <b>query.orIsEquals("city", "London");</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE age BETWEEN 12 AND 18 OR city='London'
+     * 
+     * @param name Name of field to BETWEEN
+     * @param firstValue First value in BETWEEN expression. Can be String, Integer, Long and Date
+     * @param secondValue Second value in BETWEEN expression. Can be String, Integer, Long and Date
+     * @return SelectQuery with a "OR" keyword and then, added BETWEEN where clause
+     * @throws SQLCreationException When name parameter is null or empty, or firstValue parameter is null, or secondValue parameter is null
+     */
     public SelectQuery orNotBetween(String name, Object firstValue, Object secondValue) throws SQLCreationException {
         if (isNotFirstLogicalConstraint()) {
             queryBuilder.append("OR ");
