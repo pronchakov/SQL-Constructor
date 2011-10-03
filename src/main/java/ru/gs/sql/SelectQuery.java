@@ -739,6 +739,25 @@ public final class SelectQuery extends CommonQuery {
         return this;
     }
     
+    /**
+     * Adds a where clause LIKE without wildcard with NOT prefix<br><br>
+     * 
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * <b>query.notLike("family", "Petr");</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE family NOT LIKE 'Petr'
+     * 
+     * @param name Name of field to NOT LIKE
+     * @param value NOT LIKE value. It will be wrapped by ' characters.
+     * @return SelectQuery with added NOT LIKE where clause without wildcard.
+     * @throws SQLCreationException When name parameter is null or empty, or value parameter is null
+     */
     public SelectQuery notLike(String name, Object value) throws SQLCreationException {
         if (isStringEmptyOrNull(name)) {
             throw new SQLCreationException("Field name cannot be null or empty");
@@ -782,6 +801,27 @@ public final class SelectQuery extends CommonQuery {
         return this;
     }
     
+    /**
+     * Adds a "AND" and than, where clause LIKE without wildcard with NOT prefix.<br>
+     * If it is first constraint, than "AND" will be ignored<br><br>
+     * 
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * <b>query.andNotLike("family", "Petr");</b><br>
+     * <b>query.andNotLike("family", "Petr");</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE family NOT LIKE 'Petr' AND family NOT LIKE 'Petr'
+     * 
+     * @param name Name of field to NOT LIKE
+     * @param value NOT LIKE value. It will be wrapped by ' characters.
+     * @return SelectQuery with added "AND" if it is not first constraint, and than, NOT LIKE where clause without wildcard.
+     * @throws SQLCreationException When name parameter is null or empty, or value parameter is null
+     */
     public SelectQuery andNotLike(String name, Object value) throws SQLCreationException {
         if (isNotFirstLogicalConstraint()) {
             queryBuilder.append("AND ");
@@ -804,7 +844,7 @@ public final class SelectQuery extends CommonQuery {
      * <b>query.orLike("family", "Petr");</b><br><br>
      * 
      * Result: <br>
-     * SELECT id,name FROM employee WHERE family LIKE 'Petr'
+     * SELECT id,name FROM employee WHERE family LIKE 'Petr' OR family LIKE 'Petr'
      * 
      * @param name Name of field to LIKE
      * @param value LIKE value. It will be wrapped by ' characters.
@@ -819,6 +859,27 @@ public final class SelectQuery extends CommonQuery {
         return this;
     }
     
+    /**
+     * Adds a "OR" and than, where clause LIKE without wildcard with NOT prefix.<br>
+     * If it is first constraint, than "OR" will be ignored<br><br>
+     * 
+     * Example: <br>
+     * SelectQuery query = new SelectQuery();<br>
+     * query.addField("id");<br>
+     * query.addField("name");<br>
+     * query.addFrom("employee");<br>
+     * addWhere();<br>
+     * <b>query.orNotLike("family", "Petr");</b><br>
+     * <b>query.orNotLike("family", "Petr");</b><br><br>
+     * 
+     * Result: <br>
+     * SELECT id,name FROM employee WHERE family NOT LIKE 'Petr' OR family NOT LIKE 'Petr'
+     * 
+     * @param name Name of field to NOT LIKE
+     * @param value NOT LIKE value. It will be wrapped by ' characters.
+     * @return SelectQuery with added "OR" if it is not first constraint, and than, LIKE where clause without wildcard.
+     * @throws SQLCreationException When name parameter is null or empty, or value parameter is null
+     */
     public SelectQuery orNotLike(String name, Object value) throws SQLCreationException {
         if (isNotFirstLogicalConstraint()) {
             queryBuilder.append("OR ");
