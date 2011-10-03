@@ -600,6 +600,34 @@ public final class SelectQuery extends CommonQuery {
         queryBuilder.append("' ");
         return this;
     }
+    
+    public SelectQuery notLike(String name, Object value, char wildcard, WildcardPosition position) throws SQLCreationException {
+        if (isStringEmptyOrNull(name)) {
+            throw new SQLCreationException("Field name cannot be null or empty");
+        } else if (value == null) {
+            throw new SQLCreationException("Value cannot be null");
+        } else if (position == null) {
+            throw new SQLCreationException("Wildcard position cannot be null");
+        }
+        queryBuilder.append(name);
+        queryBuilder.append(" NOT");
+        queryBuilder.append(" LIKE '");
+        switch (position) {
+            case AT_START:
+                queryBuilder.append(wildcard);
+                queryBuilder.append(value);
+                break;
+            case AT_END:
+                queryBuilder.append(value);
+                queryBuilder.append(wildcard);
+                break;
+            default:
+                queryBuilder.append(value);
+                break;
+        }
+        queryBuilder.append("' ");
+        return this;
+    }
 
     /**
      * Adds a "AND" and than, where clause LIKE with wildcard<br>
@@ -631,6 +659,14 @@ public final class SelectQuery extends CommonQuery {
         like(name, value, wildcard, position);
         return this;
     }
+    
+    public SelectQuery andNotLike(String name, Object value, char wildcard, WildcardPosition position) throws SQLCreationException {
+        if (isNotFirstLogicalConstraint()) {
+            queryBuilder.append("AND ");
+        }
+        notLike(name, value, wildcard, position);
+        return this;
+    }
 
     /**
      * Adds a "OR" and than, where clause LIKE with wildcard<br>
@@ -660,6 +696,14 @@ public final class SelectQuery extends CommonQuery {
             queryBuilder.append("OR ");
         }
         like(name, value, wildcard, position);
+        return this;
+    }
+    
+    public SelectQuery orNotLike(String name, Object value, char wildcard, WildcardPosition position) throws SQLCreationException {
+        if (isNotFirstLogicalConstraint()) {
+            queryBuilder.append("OR ");
+        }
+        notLike(name, value, wildcard, position);
         return this;
     }
 
@@ -694,6 +738,20 @@ public final class SelectQuery extends CommonQuery {
         queryBuilder.append("' ");
         return this;
     }
+    
+    public SelectQuery notLike(String name, Object value) throws SQLCreationException {
+        if (isStringEmptyOrNull(name)) {
+            throw new SQLCreationException("Field name cannot be null or empty");
+        } else if (value == null) {
+            throw new SQLCreationException("Value cannot be null");
+        }
+        queryBuilder.append(name);
+        queryBuilder.append(" NOT");
+        queryBuilder.append(" LIKE '");
+        queryBuilder.append(value);
+        queryBuilder.append("' ");
+        return this;
+    }
 
     /**
      * Adds a "AND" and than, where clause LIKE without wildcard.<br>
@@ -723,6 +781,14 @@ public final class SelectQuery extends CommonQuery {
         like(name, value);
         return this;
     }
+    
+    public SelectQuery andNotLike(String name, Object value) throws SQLCreationException {
+        if (isNotFirstLogicalConstraint()) {
+            queryBuilder.append("AND ");
+        }
+        notLike(name, value);
+        return this;
+    }
 
     /**
      * Adds a "OR" and than, where clause LIKE without wildcard.<br>
@@ -750,6 +816,14 @@ public final class SelectQuery extends CommonQuery {
             queryBuilder.append("OR ");
         }
         like(name, value);
+        return this;
+    }
+    
+    public SelectQuery orNotLike(String name, Object value) throws SQLCreationException {
+        if (isNotFirstLogicalConstraint()) {
+            queryBuilder.append("OR ");
+        }
+        notLike(name, value);
         return this;
     }
 

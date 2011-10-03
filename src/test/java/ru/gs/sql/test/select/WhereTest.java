@@ -194,6 +194,15 @@ public class WhereTest {
     }
     
     @Test
+    public void fromNotLikeSimpleTestString() throws SQLCreationException {
+        initQuery();
+
+        query.notLike("name", "Petrov");
+
+        assertEquals("SELECT name,family,sex FROM employee WHERE name NOT LIKE 'Petrov'", query.getQueryString());
+    }
+    
+    @Test
     public void fromLikeSimpleTestInteger() throws SQLCreationException {
         initQuery();
 
@@ -213,6 +222,16 @@ public class WhereTest {
     }
     
     @Test
+    public void fromAndNotLikeSimpleTest() throws SQLCreationException {
+        initQuery();
+
+        query.andNotLike("name", "Petrov");
+        query.andNotLike("name", "Petrov");
+
+        assertEquals("SELECT name,family,sex FROM employee WHERE name NOT LIKE 'Petrov' AND name NOT LIKE 'Petrov'", query.getQueryString());
+    }
+    
+    @Test
     public void fromOrLikeSimpleTest() throws SQLCreationException {
         initQuery();
 
@@ -220,6 +239,16 @@ public class WhereTest {
         query.orLike("name", "Petrov");
 
         assertEquals("SELECT name,family,sex FROM employee WHERE name LIKE 'Petrov' OR name LIKE 'Petrov'", query.getQueryString());
+    }
+    
+    @Test
+    public void fromOrNotLikeSimpleTest() throws SQLCreationException {
+        initQuery();
+
+        query.orNotLike("name", "Petrov");
+        query.orNotLike("name", "Petrov");
+
+        assertEquals("SELECT name,family,sex FROM employee WHERE name NOT LIKE 'Petrov' OR name NOT LIKE 'Petrov'", query.getQueryString());
     }
 
     @Test
@@ -229,6 +258,55 @@ public class WhereTest {
         query.like("name", "Petrov", '%', WildcardPosition.AT_START);
 
         assertEquals("SELECT name,family,sex FROM employee WHERE name LIKE '%Petrov'", query.getQueryString());
+    }
+    
+    @Test
+    public void fromAndLikeWildcardAtStartTest() throws SQLCreationException {
+        initQuery();
+
+        query.andLike("name", "Petrov", '%', WildcardPosition.AT_START);
+        query.andLike("name", "Petrov", '%', WildcardPosition.AT_START);
+
+        assertEquals("SELECT name,family,sex FROM employee WHERE name LIKE '%Petrov' AND name LIKE '%Petrov'", query.getQueryString());
+    }
+    
+    @Test
+    public void fromOrLikeWildcardAtStartTest() throws SQLCreationException {
+        initQuery();
+
+        query.orLike("name", "Petrov", '%', WildcardPosition.AT_START);
+        query.orLike("name", "Petrov", '%', WildcardPosition.AT_START);
+
+        assertEquals("SELECT name,family,sex FROM employee WHERE name LIKE '%Petrov' OR name LIKE '%Petrov'", query.getQueryString());
+    }
+    
+    @Test
+    public void fromNotLikeWildcardAtStartTest() throws SQLCreationException {
+        initQuery();
+
+        query.notLike("name", "Petrov", '%', WildcardPosition.AT_START);
+
+        assertEquals("SELECT name,family,sex FROM employee WHERE name NOT LIKE '%Petrov'", query.getQueryString());
+    }
+    
+    @Test
+    public void fromAndNotLikeWildcardAtStartTest() throws SQLCreationException {
+        initQuery();
+
+        query.andNotLike("name", "Petrov", '%', WildcardPosition.AT_START);
+        query.andNotLike("name", "Petrov", '%', WildcardPosition.AT_START);
+
+        assertEquals("SELECT name,family,sex FROM employee WHERE name NOT LIKE '%Petrov' AND name NOT LIKE '%Petrov'", query.getQueryString());
+    }
+    
+    @Test
+    public void fromOrNotLikeWildcardAtStartTest() throws SQLCreationException {
+        initQuery();
+
+        query.orNotLike("name", "Petrov", '%', WildcardPosition.AT_START);
+        query.orNotLike("name", "Petrov", '%', WildcardPosition.AT_START);
+
+        assertEquals("SELECT name,family,sex FROM employee WHERE name NOT LIKE '%Petrov' OR name NOT LIKE '%Petrov'", query.getQueryString());
     }
 
     @Test
