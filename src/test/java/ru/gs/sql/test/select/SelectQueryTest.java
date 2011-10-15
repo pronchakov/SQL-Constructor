@@ -61,8 +61,10 @@ public class SelectQueryTest {
         query.like("name", "Petrov", '%', WildcardPosition.AT_END).orIsEquals("name", "Petrov").andIsEquals("name", "Petrov");
         query.orNotBetween("birth", testDate, testDate).andNotBetween("birth", testDate, testDate);
         query.orLike("name", "Petrov", '_', WildcardPosition.AT_START).andLike("name", "Petrov", '%', WildcardPosition.AT_START);
+        query.andBetween("name", 1, 2);
+        query.orBetween("name", 1, 2);
 
-        assertEquals("SELECT name,family,sex FROM employee WHERE name LIKE 'Petrov%' OR name='Petrov' AND name='Petrov' OR birth NOT BETWEEN '" + testDateString + "' AND '" + testDateString + "' AND birth NOT BETWEEN '" + testDateString + "' AND '" + testDateString + "' OR name LIKE '_Petrov' AND name LIKE '%Petrov'", query.getQueryString());
+        assertEquals("SELECT name,family,sex FROM employee WHERE name LIKE 'Petrov%' OR name='Petrov' AND name='Petrov' OR birth NOT BETWEEN '" + testDateString + "' AND '" + testDateString + "' AND birth NOT BETWEEN '" + testDateString + "' AND '" + testDateString + "' OR name LIKE '_Petrov' AND name LIKE '%Petrov' AND name BETWEEN 1 AND 2 OR name BETWEEN 1 AND 2", query.getQueryString());
     }
     
     @Test

@@ -598,9 +598,6 @@ public final class SelectQuery extends CommonQuery {
                 queryBuilder.append(value);
                 queryBuilder.append(wildcard);
                 break;
-            default:
-                queryBuilder.append(value);
-                break;
         }
         queryBuilder.append("' ");
     }
