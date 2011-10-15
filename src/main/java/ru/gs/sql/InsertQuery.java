@@ -29,14 +29,6 @@ public class InsertQuery extends CommonQuery {
         queryBuilder.append(" ");
         return this;
     }
-    
-    private boolean isStringEmptyOrNull(String string) {
-        if (string == null || string.isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     public void addInsertableFieldNames(String[] names) throws SQLCreationException {
         addInsertableFieldNamesCommonMethod(Arrays.asList(names));

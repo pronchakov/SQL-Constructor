@@ -21,6 +21,10 @@ public abstract class CommonQuery {
      */
     public static final String DEFAULT_SQL_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
     protected String dateTimeFormat = DEFAULT_SQL_DATE_TIME_FORMAT;
+    
+    protected boolean isStringEmptyOrNull(String string) {
+        return string == null || string.isEmpty();
+    }
 
     protected void deleteLastCommaIFExist() {
         char ch = queryBuilder.charAt(queryBuilder.length() - 2);

@@ -27,6 +27,11 @@ import ru.gs.sql.exceptions.SQLCreationException;
  * @author APronchakov <artem.pronchakov@gmail.com>
  */
 public final class SelectQuery extends CommonQuery {
+    private static final String EXCEPTION_NULL_TABLE_NAME = "Table name cannot be null or empty";
+    private static final String EXCEPTION_NULL_FIELD = "Field name cannot be null or empty";
+    private static final String EXCEPTION_NULL_VALUE = "Value cannot be null";
+    private static final String AND = "AND ";
+    private static final String OR = "OR ";
 
     /**
      * Create SQL query with just "SELECT" word.
@@ -81,19 +86,11 @@ public final class SelectQuery extends CommonQuery {
      */
     public SelectQuery addField(String name) throws SQLCreationException {
         if (isStringEmptyOrNull(name)) {
-            throw new SQLCreationException("Field name cannot be null or empty");
+            throw new SQLCreationException(EXCEPTION_NULL_FIELD);
         }
         queryBuilder.append(name);
         queryBuilder.append(",");
         return this;
-    }
-
-    private boolean isStringEmptyOrNull(String string) {
-        if (string == null || string.isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /**
@@ -106,7 +103,7 @@ public final class SelectQuery extends CommonQuery {
      */
     public SelectQuery addTableName(String tableName) throws SQLCreationException {
         if (isStringEmptyOrNull(tableName)) {
-            throw new SQLCreationException("Table name cannot be null or empty");
+            throw new SQLCreationException(EXCEPTION_NULL_TABLE_NAME);
         }
         deleteLastCommaIFExist();
         queryBuilder.append(tableName);
@@ -176,7 +173,7 @@ public final class SelectQuery extends CommonQuery {
      */
     public SelectQuery addFrom(String tableName) throws SQLCreationException {
         if (isStringEmptyOrNull(tableName)) {
-            throw new SQLCreationException("Table name cannot be null or empty");
+            throw new SQLCreationException(EXCEPTION_NULL_TABLE_NAME);
         }
         deleteLastCommaIFExist();
         queryBuilder.append(" FROM ");
@@ -236,7 +233,7 @@ public final class SelectQuery extends CommonQuery {
      */
     public SelectQuery andIsEquals(String name, Object value) throws SQLCreationException {
         if (isNotFirstLogicalConstraint()) {
-            queryBuilder.append("AND ");
+            queryBuilder.append(AND);
         }
         isEquals(name, value);
         return this;
@@ -281,7 +278,7 @@ public final class SelectQuery extends CommonQuery {
      */
     public SelectQuery orIsEquals(String name, Object value) throws SQLCreationException {
         if (isNotFirstLogicalConstraint()) {
-            queryBuilder.append("OR ");
+            queryBuilder.append(OR);
         }
         isEquals(name, value);
         return this;
@@ -316,7 +313,7 @@ public final class SelectQuery extends CommonQuery {
     
     private void checkBetweenParameters(String name, Object firstValue, Object secondValue) throws SQLCreationException {
         if (isStringEmptyOrNull(name)) {
-            throw new SQLCreationException("Field name cannot be null or empty");
+            throw new SQLCreationException(EXCEPTION_NULL_FIELD);
         } else if (firstValue == null) {
             throw new SQLCreationException("First value for BETWEEN cannot be null");
         } else if (secondValue == null) {
@@ -396,7 +393,7 @@ public final class SelectQuery extends CommonQuery {
      */
     public SelectQuery andBetween(String name, Object firstValue, Object secondValue) throws SQLCreationException {
         if (isNotFirstLogicalConstraint()) {
-            queryBuilder.append("AND ");
+            queryBuilder.append(AND);
         }
         between(name, firstValue, secondValue);
         return this;
@@ -438,7 +435,7 @@ public final class SelectQuery extends CommonQuery {
      */
     public SelectQuery andNotBetween(String name, Object firstValue, Object secondValue) throws SQLCreationException {
         if (isNotFirstLogicalConstraint()) {
-            queryBuilder.append("AND ");
+            queryBuilder.append(AND);
         }
         notBetween(name, firstValue, secondValue);
         return this;
@@ -480,7 +477,7 @@ public final class SelectQuery extends CommonQuery {
      */
     public SelectQuery orBetween(String name, Object firstValue, Object secondValue) throws SQLCreationException {
         if (isNotFirstLogicalConstraint()) {
-            queryBuilder.append("OR ");
+            queryBuilder.append(OR);
         }
         between(name, firstValue, secondValue);
         return this;
@@ -522,7 +519,7 @@ public final class SelectQuery extends CommonQuery {
      */
     public SelectQuery orNotBetween(String name, Object firstValue, Object secondValue) throws SQLCreationException {
         if (isNotFirstLogicalConstraint()) {
-            queryBuilder.append("OR ");
+            queryBuilder.append(OR);
         }
         notBetween(name, firstValue, secondValue);
         return this;
@@ -579,9 +576,9 @@ public final class SelectQuery extends CommonQuery {
     
     private void checkLikeParameters(String name, Object value, WildcardPosition position) throws SQLCreationException {
         if (isStringEmptyOrNull(name)) {
-            throw new SQLCreationException("Field name cannot be null or empty");
+            throw new SQLCreationException(EXCEPTION_NULL_FIELD);
         } else if (value == null) {
-            throw new SQLCreationException("Value cannot be null");
+            throw new SQLCreationException(EXCEPTION_NULL_VALUE);
         } else if (position == null) {
             throw new SQLCreationException("Wildcard position cannot be null");
         }
@@ -597,6 +594,9 @@ public final class SelectQuery extends CommonQuery {
             case AT_END:
                 queryBuilder.append(value);
                 queryBuilder.append(wildcard);
+                break;
+            default:
+                queryBuilder.append(value);
                 break;
         }
         queryBuilder.append("' ");
@@ -656,7 +656,7 @@ public final class SelectQuery extends CommonQuery {
      */
     public SelectQuery andLike(String name, Object value, char wildcard, WildcardPosition position) throws SQLCreationException {
         if (isNotFirstLogicalConstraint()) {
-            queryBuilder.append("AND ");
+            queryBuilder.append(AND);
         }
         like(name, value, wildcard, position);
         return this;
@@ -687,7 +687,7 @@ public final class SelectQuery extends CommonQuery {
      */
     public SelectQuery andNotLike(String name, Object value, char wildcard, WildcardPosition position) throws SQLCreationException {
         if (isNotFirstLogicalConstraint()) {
-            queryBuilder.append("AND ");
+            queryBuilder.append(AND);
         }
         notLike(name, value, wildcard, position);
         return this;
@@ -718,7 +718,7 @@ public final class SelectQuery extends CommonQuery {
      */
     public SelectQuery orLike(String name, Object value, char wildcard, WildcardPosition position) throws SQLCreationException {
         if (isNotFirstLogicalConstraint()) {
-            queryBuilder.append("OR ");
+            queryBuilder.append(OR);
         }
         like(name, value, wildcard, position);
         return this;
@@ -749,7 +749,7 @@ public final class SelectQuery extends CommonQuery {
      */
     public SelectQuery orNotLike(String name, Object value, char wildcard, WildcardPosition position) throws SQLCreationException {
         if (isNotFirstLogicalConstraint()) {
-            queryBuilder.append("OR ");
+            queryBuilder.append(OR);
         }
         notLike(name, value, wildcard, position);
         return this;
@@ -810,9 +810,9 @@ public final class SelectQuery extends CommonQuery {
     
     private void checkSimpleLikeParameters(String name, Object value) throws SQLCreationException {
         if (isStringEmptyOrNull(name)) {
-            throw new SQLCreationException("Field name cannot be null or empty");
+            throw new SQLCreationException(EXCEPTION_NULL_FIELD);
         } else if (value == null) {
-            throw new SQLCreationException("Value cannot be null");
+            throw new SQLCreationException(EXCEPTION_NULL_VALUE);
         }
     }
 
@@ -845,7 +845,7 @@ public final class SelectQuery extends CommonQuery {
      */
     public SelectQuery andLike(String name, Object value) throws SQLCreationException {
         if (isNotFirstLogicalConstraint()) {
-            queryBuilder.append("AND ");
+            queryBuilder.append(AND);
         }
         like(name, value);
         return this;
@@ -874,7 +874,7 @@ public final class SelectQuery extends CommonQuery {
      */
     public SelectQuery andNotLike(String name, Object value) throws SQLCreationException {
         if (isNotFirstLogicalConstraint()) {
-            queryBuilder.append("AND ");
+            queryBuilder.append(AND);
         }
         notLike(name, value);
         return this;
@@ -903,7 +903,7 @@ public final class SelectQuery extends CommonQuery {
      */
     public SelectQuery orLike(String name, Object value) throws SQLCreationException {
         if (isNotFirstLogicalConstraint()) {
-            queryBuilder.append("OR ");
+            queryBuilder.append(OR);
         }
         like(name, value);
         return this;
@@ -932,7 +932,7 @@ public final class SelectQuery extends CommonQuery {
      */
     public SelectQuery orNotLike(String name, Object value) throws SQLCreationException {
         if (isNotFirstLogicalConstraint()) {
-            queryBuilder.append("OR ");
+            queryBuilder.append(OR);
         }
         notLike(name, value);
         return this;
