@@ -21,6 +21,12 @@ public class InsertQuery extends CommonQuery {
     /**
      * Creates initial state query with "INSERT INTO" statements and a table name after it
      * 
+     * Example:
+     * InsertQuery query = new InsertQuery("employee");
+     * 
+     * Result:
+     * INSERT INTO employee
+     * 
      * @param tableName Table name to insert to
      */
     public InsertQuery(String tableName) {
@@ -30,8 +36,15 @@ public class InsertQuery extends CommonQuery {
     }
 
     /**
-     * When you created InsertQuery like new InsertQuery()
+     * When you create InsertQuery like new InsertQuery()
      * to add a table name to insert to, use this method.
+     * 
+     * Example:
+     * InsertQuery query = new InsertQuery();
+     * query.addTableName("employee");
+     * 
+     * Result:
+     * INSERT INTO employee
      * 
      * @param name Table name to insert to
      * @return InsertQuery with added table name to insert to
@@ -47,20 +60,43 @@ public class InsertQuery extends CommonQuery {
     }
 
     /**
+     * If you have already defined list(or array) of field names which you want to insert, use this method
      * 
-     * @param names
-     * @return 
-     * @throws SQLCreationException
+     * Example:
+     * String[] fieldNames = new String[]{"id", "name", "family"};
+     * 
+     * InsertQuery query = new InsertQuery("employee");
+     * query.addInsertableFieldNames(fieldNames);
+     * 
+     * Result:
+     * INSERT INTO employee (id,name,family)
+     * 
+     * @param names String array with field names
+     * @return InsertQuery with added field names after table name
+     * @throws SQLCreationException If names array is null or empty
      */
     public InsertQuery addInsertableFieldNames(String[] names) throws SQLCreationException {
         return addInsertableFieldNamesCommonMethod(Arrays.asList(names));
     }
 
     /**
+     * If you have already defined list(or array) of field names which you want to insert, use this method
      * 
-     * @param names
-     * @return 
-     * @throws SQLCreationException
+     * Example:
+     * List<String> fieldNames = new ArrayList<String>();
+     * fieldNames.add("id");
+     * fieldNames.add("name");
+     * fieldNames.add("family");
+     * 
+     * InsertQuery query = new InsertQuery("employee");
+     * query.addInsertableFieldNames(fieldNames);
+     * 
+     * Result:
+     * INSERT INTO employee (id,name,family)
+     * 
+     * @param names List of field names to insert
+     * @return InsertQuery with added field names after table name
+     * @throws SQLCreationException If names list is null or empty
      */
     public InsertQuery addInsertableFieldNames(List<String> names) throws SQLCreationException {
         return addInsertableFieldNamesCommonMethod(names);
@@ -81,8 +117,23 @@ public class InsertQuery extends CommonQuery {
     }
 
     /**
+     * If you don't know what fields you want to insert, or you don't want to build list or array of it
+     * use increment methods to add insertable field names.
      * 
-     * @return 
+     * With this method you will add start "("
+     * 
+     * Example:
+     * InsertQuery query = new InsertQuery("employee");
+     * query.startAddingInsertableFieldNames();
+     * // some your code, for example some for() {}
+     * addInsertableFieldName(someYourObj.netName());
+     * // some your other code
+     * query.stopAddingInsertableFieldNames();
+     * 
+     * Result:
+     * INSERT INTO employee (yourname1, yourname2, yourname3)
+     * 
+     * @return InsertQuery with start "(" for adding insertable field names later
      */
     public InsertQuery startAddingInsertableFieldNames() {
         queryBuilder.append("(");
@@ -90,8 +141,23 @@ public class InsertQuery extends CommonQuery {
     }
 
     /**
+     * If you don't know what fields you want to insert, or you don't want to build list or array of it
+     * use increment methods to add insertable field names.
      * 
-     * @return 
+     * With this method you will add end ")"
+     * 
+     * Example:
+     * InsertQuery query = new InsertQuery("employee");
+     * query.startAddingInsertableFieldNames();
+     * // some your code, for example some for() {}
+     * addInsertableFieldName(someYourObj.netName());
+     * // some your other code
+     * query.stopAddingInsertableFieldNames();
+     * 
+     * Result:
+     * INSERT INTO employee (yourname1, yourname2, yourname3)
+     * 
+     * @return InsertQuery with end ")" after adding insertable field names before
      */
     public InsertQuery stopAddingInsertableFieldNames() {
         deleteLastCommaIFExist();
@@ -100,10 +166,22 @@ public class InsertQuery extends CommonQuery {
     }
 
     /**
+     * Adds field name to insert.
      * 
-     * @param name
-     * @return 
-     * @throws SQLCreationException
+     * Example:
+     * InsertQuery query = new InsertQuery("employee");
+     * query.startAddingInsertableFieldNames();
+     * query.addInsertableFieldName("id");
+     * query.addInsertableFieldName("name");
+     * query.addInsertableFieldName("family");
+     * query.stopAddingInsertableFieldNames();
+     * 
+     * Result:
+     * INSERT INTO employee (id, name, family)
+     * 
+     * @param name String with field name to insert
+     * @return InsertQuery with added another field name
+     * @throws SQLCreationException When name parameter is null or empty
      */
     public InsertQuery addInsertableFieldName(String name) throws SQLCreationException {
         if (name == null || name.length() == 0) {
