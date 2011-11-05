@@ -191,4 +191,46 @@ public class InsertQuery extends CommonQuery {
         queryBuilder.append(",");
         return this;
     }
+    
+    /**
+     * 
+     * @return
+     */
+    public InsertQuery addValues() {
+        queryBuilder.append("VALUES ");
+        return this;
+    }
+    
+    /**
+     * 
+     * @param values
+     * @return
+     * @throws SQLCreationException
+     */
+    public InsertQuery addValues(List<Object> values) throws SQLCreationException {
+        return addValuesCommon(values);
+    }
+    
+    /**
+     * 
+     * @param values
+     * @return
+     * @throws SQLCreationException
+     */
+    public InsertQuery addValues(Object[] values) throws SQLCreationException {
+        return addValuesCommon(Arrays.asList(values));
+    }
+    
+    private InsertQuery addValuesCommon(List<Object> values) throws SQLCreationException {
+        if (values == null || values.isEmpty()) {
+            throw new SQLCreationException("Values list cannot be null or empty");
+        }
+        queryBuilder.append("(");
+        
+        // TODO: implement adding values according to their types
+        
+        deleteLastCommaIFExist();
+        queryBuilder.append(")");
+        return this;
+    }
 }
