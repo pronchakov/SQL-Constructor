@@ -225,9 +225,12 @@ public class InsertQuery extends CommonQuery {
         if (values == null || values.isEmpty()) {
             throw new SQLCreationException("Values list cannot be null or empty");
         }
-        queryBuilder.append("(");
+        queryBuilder.append("VALUES (");
         
-        // TODO: implement adding values according to their types
+        for (Object value: values) {
+            insertValueDependsOnClass(value);
+            queryBuilder.append(",");
+        }
         
         deleteLastCommaIFExist();
         queryBuilder.append(")");

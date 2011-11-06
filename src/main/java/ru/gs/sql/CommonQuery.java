@@ -1,5 +1,8 @@
 package ru.gs.sql;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * This is a common query class that extend primary query classes.
  * It has common methods and attributes for them.
@@ -83,5 +86,26 @@ public abstract class CommonQuery {
     @Override
     public String toString() {
         return getQueryString();
+    }
+    
+    protected void insertValueDependsOnClass(Object value) {
+        insertValueDependsOnClassNumberOrDate(value);
+        if (value instanceof String) {
+            queryBuilder.append("'");
+            queryBuilder.append(value);
+            queryBuilder.append("'");
+        }
+    }
+
+    protected void insertValueDependsOnClassNumberOrDate(Object value) {
+        if (value instanceof Integer || value instanceof Long) {
+            queryBuilder.append(value);
+        } else if (value instanceof Date) {
+            SimpleDateFormat sdf = new SimpleDateFormat(dateTimeFormat);
+            String formatedDate = sdf.format(value);
+            queryBuilder.append("'");
+            queryBuilder.append(formatedDate);
+            queryBuilder.append("'");
+        }
     }
 }

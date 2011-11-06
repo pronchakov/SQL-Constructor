@@ -525,27 +525,6 @@ public final class SelectQuery extends CommonQuery {
         return this;
     }
 
-    private void insertValueDependsOnClass(Object value) {
-        insertValueDependsOnClassNumberOrDate(value);
-        if (value instanceof String) {
-            queryBuilder.append("'");
-            queryBuilder.append(value);
-            queryBuilder.append("'");
-        }
-    }
-
-    private void insertValueDependsOnClassNumberOrDate(Object value) {
-        if (value instanceof Integer || value instanceof Long) {
-            queryBuilder.append(value);
-        } else if (value instanceof Date) {
-            SimpleDateFormat sdf = new SimpleDateFormat(dateTimeFormat);
-            String formatedDate = sdf.format(value);
-            queryBuilder.append("'");
-            queryBuilder.append(formatedDate);
-            queryBuilder.append("'");
-        }
-    }
-
     /**
      * Adds a where clause LIKE with wildcard<br><br>
      * 
