@@ -1,10 +1,10 @@
 package ru.gs.sql.test.select;
 
 import java.util.List;
-import ru.gs.sql.exceptions.SQLCreationException;
 import org.junit.Test;
 import ru.gs.sql.SelectQuery;
 import ru.gs.sql.WildcardPosition;
+import ru.gs.sql.exceptions.SQLCreationException;
 
 /**
  *
