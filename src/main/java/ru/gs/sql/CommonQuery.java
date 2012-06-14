@@ -13,7 +13,7 @@ import java.util.Date;
  *
  * @author APronchakov <artem.pronchakov@gmail.com>
  */
-public abstract class CommonQuery {
+abstract class CommonQuery {
 
     protected StringBuilder queryBuilder = new StringBuilder();
     /**
