@@ -1,15 +1,42 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ru.gs.sql.utils</groupId>
     <artifactId>SQLConstructor</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1</version>
     <packaging>jar</packaging>
 
     <name>SQLConstructor</name>
-    <url>http://maven.apache.org</url>
+    <url>https://github.com/pronchakov/SQL-Constructor</url>
+    <description>A simple Java library that helps you to construct SQL queries</description>
+    
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+    
+    <scm>
+        <connection>scm:git:https://github.com/pronchakov/SQL-Constructor.git</connection>
+        <url>https://github.com/pronchakov/SQL-Constructor</url>
+    </scm>
+    
+    <developers>
+        <developer>
+            <id>artem</id>
+            <name>Artem Pronchakov</name>
+            <email>artem.pronchakov@gmail.com</email>
+            <url>http://www.pronchakov.ru</url>
+            <timezone>+4</timezone>
+            <properties>
+                <picUrl>http://www.gravatar.com/avatar/d7027a361d3c2edd18927f80ad59f182.png</picUrl>
+            </properties>
+        </developer>
+    </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -35,6 +62,16 @@
                     <target>1.5</target>
                 </configuration>
             </plugin>
+            <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.8.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
+			</plugin>
         </plugins>
         <finalName>${project.artifactId}</finalName>
     </build>
