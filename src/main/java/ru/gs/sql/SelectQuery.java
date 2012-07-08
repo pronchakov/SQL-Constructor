@@ -237,7 +237,7 @@ public final class SelectQuery extends CommonQuery {
         return this;
     }
 
-    private boolean isNotFirstLogicalConstraint() {
+    protected boolean isNotFirstLogicalConstraint() {
         return !queryBuilder.substring(queryBuilder.length() - 6, queryBuilder.length() - 1).equalsIgnoreCase("WHERE");
     }
 

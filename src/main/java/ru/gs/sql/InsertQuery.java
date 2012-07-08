@@ -236,4 +236,9 @@ public class InsertQuery extends CommonQuery {
         queryBuilder.append(")");
         return this;
     }
+
+	@Override
+	protected boolean isNotFirstLogicalConstraint() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 }

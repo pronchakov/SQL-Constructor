@@ -1,8 +1,5 @@
 package ru.gs.sql;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 /**
  *
  * @author APronchakov <artem.pronchakov@gmail.com>
@@ -30,41 +27,12 @@ public class UpdateQuery extends CommonQuery {
 		return this;
 	}
 
-	public UpdateQuery addSet(String field, String value) {
-		if (isNotFirstLogicalConstraint()) {
-			queryBuilder.append(", ");
-		}
-		queryBuilder.append(field);
-		queryBuilder.append(" = '");
-		queryBuilder.append(value);
-		queryBuilder.append("'");
+	public UpdateQuery addSet(String field, Object value) {
+		updateValueDependsOnClass(field, value);
 		return this;
 	}
 
-	public UpdateQuery addSet(String field, Integer value) {
-		if (isNotFirstLogicalConstraint()) {
-			queryBuilder.append(", ");
-		}
-		queryBuilder.append(field);
-		queryBuilder.append(" = ");
-		queryBuilder.append(value);
-		return this;
-	}
-
-	public UpdateQuery addSet(String field, Date value) {
-		SimpleDateFormat sdf = new SimpleDateFormat(dateTimeFormat);
-		String formatedDate = sdf.format(value);
-		if (isNotFirstLogicalConstraint()) {
-			queryBuilder.append(", ");
-		}
-		queryBuilder.append(field);
-		queryBuilder.append(" = '");
-		queryBuilder.append(formatedDate);
-		queryBuilder.append("'");
-		return this;
-	}
-
-	private boolean isNotFirstLogicalConstraint() {
+	protected boolean isNotFirstLogicalConstraint() {
 		return !queryBuilder.substring(queryBuilder.length() - 4, queryBuilder.length() - 1).equalsIgnoreCase("SET");
 	}
 }

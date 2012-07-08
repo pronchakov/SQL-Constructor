@@ -2,10 +2,10 @@ package ru.gs.sql.test.select;
 
 import java.util.Calendar;
 import java.util.Date;
+import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
-import ru.gs.sql.UpdateQuery;
-import static org.junit.Assert.*;
 import org.junit.Test;
+import ru.gs.sql.UpdateQuery;
 
 /**
  *
