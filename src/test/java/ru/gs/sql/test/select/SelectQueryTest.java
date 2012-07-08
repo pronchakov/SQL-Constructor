@@ -1,14 +1,14 @@
 package ru.gs.sql.test.select;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import ru.gs.sql.SelectQuery;
 import ru.gs.sql.WildcardPosition;
-import static org.junit.Assert.*;
 import ru.gs.sql.exceptions.SQLCreationException;
 
 public class SelectQueryTest {
